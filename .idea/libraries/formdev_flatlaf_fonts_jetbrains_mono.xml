@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="formdev.flatlaf.fonts.jetbrains.mono" type="repository">
+    <properties maven-id="com.formdev:flatlaf-fonts-jetbrains-mono:2.304" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/flatlaf-fonts-jetbrains-mono-2.304.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/flatlaf-3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
