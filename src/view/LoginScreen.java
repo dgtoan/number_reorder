@@ -118,7 +118,10 @@ public class LoginScreen extends JPanel {
     private void initEvents() {
         loginButton.addActionListener(e -> {
             if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
-                JOptionPane.showMessageDialog(Application.getInstance(), "Vui lòng nhập đầy đủ thông tin", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        "Vui lòng nhập đầy đủ thông tin",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
             Application.getInstance().nextTo(new HomeView());
