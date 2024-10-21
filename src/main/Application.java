@@ -3,16 +3,20 @@ package main;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
+import view.ComponentResizeListener;
 import view.LoginScreen;
-import view.RegisterView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class Application extends JFrame {
     private final JPanel navigator = new JPanel(new CardLayout());
 
     private static final Application instance = new Application();
+
+    public ComponentResizeListener componentResizeListener;
 
     private Application() {
         customFlatLaf();
@@ -22,6 +26,14 @@ public class Application extends JFrame {
         setLocationRelativeTo(null);
         navigator.setBounds(0, 0, 1280, 720);
         add(navigator);
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (componentResizeListener != null)
+                    componentResizeListener.componentResized(e);
+            }
+        });
     }
 
     public static Application getInstance() {
