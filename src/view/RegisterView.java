@@ -47,19 +47,6 @@ public class RegisterView extends JPanel {
                 "arc:32");
         container.add(registerForm);
 
-//        // Back icon button
-//        ImageIcon backIcon = new ImageIcon("assets/back_icon.png");
-//        Image image = backIcon.getImage();
-//        Image newImage = image.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-//        backIcon = new ImageIcon(newImage);
-//        backButton = new JButton("Trở lại", backIcon);
-//        backButton.putClientProperty(FlatClientProperties.STYLE, "" +
-//                "background:darken(@background, 5%);" +
-//                "foreground:darken(@accentColor, 10%);" +
-////                "border: 0,0,0,0;" +
-//                "font:bold");
-//        registerForm.add(backButton, "w 48");
-
         // Back panel
         JPanel backPanel = new JPanel();
         backPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -137,7 +124,7 @@ public class RegisterView extends JPanel {
         });
 
         registerButton.addActionListener(e -> {
-            Application.getInstance().nextTo(new HomeView());
+            Application.getInstance().setRoot(new HomeView());
         });
     }
 }

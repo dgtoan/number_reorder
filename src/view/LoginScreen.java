@@ -124,7 +124,7 @@ public class LoginScreen extends JPanel {
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            Application.getInstance().nextTo(new HomeView());
+            Application.getInstance().setRoot(new HomeView());
         });
 
         forgotPasswordButton.addMouseListener(new java.awt.event.MouseAdapter() {
