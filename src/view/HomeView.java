@@ -2,15 +2,10 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
-import net.miginfocom.layout.ComponentWrapper;
-import net.miginfocom.layout.LayoutCallback;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 
 // UI description:
 // 1/3 left: user info: avatar, username, rank, elo, total games, win rate, history button, logout button
@@ -20,7 +15,7 @@ public class HomeView extends JPanel implements ComponentResizeListener {
 
     public HomeView() {
         setName("Home View");
-        setLayout(new MigLayout("fill, insets 16", "[]16[]", ""));
+        setLayout(new MigLayout("fill, insets 16", "[]16[][]", ""));
 
         initComponents();
         initEvents();
@@ -35,17 +30,17 @@ public class HomeView extends JPanel implements ComponentResizeListener {
 
     private void initUserInfo() {
         userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap, w 180::"));
+        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap"));
         userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:darken(@background, 5%);" +
                 "arc:16");
-        add(userInfoPanel, "grow, hidemode 3");
+        add(userInfoPanel, "grow, hidemode 3, w 256::");
     }
 
     private void initRankingTable() {
         JTable rankingTable = new JTable();
         JScrollPane rankingScrollPane = new JScrollPane(rankingTable);
-        add(rankingScrollPane, "span 2, grow");
+        add(rankingScrollPane, "span 3, grow");
     }
 
     private void initEvents() {
@@ -54,7 +49,7 @@ public class HomeView extends JPanel implements ComponentResizeListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        if (e.getComponent().getWidth() / 3 <= 180) {
+        if (e.getComponent().getWidth() < 640) {
             userInfoPanel.setVisible(false);
             revalidate();
         } else {
