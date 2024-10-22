@@ -16,6 +16,8 @@ import java.awt.event.ComponentListener;
 // 1/3 left: user info: avatar, username, rank, elo, total games, win rate, history button, logout button
 // 2/3 right: ranking table: index, name, elo, total games, win rate, invite button
 public class HomeView extends JPanel implements ComponentResizeListener {
+    JPanel userInfoPanel;
+
     public HomeView() {
         setName("Home View");
         setLayout(new MigLayout("fill, insets 16", "[]16[]", ""));
@@ -32,8 +34,8 @@ public class HomeView extends JPanel implements ComponentResizeListener {
     }
 
     private void initUserInfo() {
-        JPanel userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap"));
+        userInfoPanel = new JPanel();
+        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap, w 180::"));
         userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:darken(@background, 5%);" +
                 "arc:16");
@@ -52,6 +54,12 @@ public class HomeView extends JPanel implements ComponentResizeListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        System.out.println("Home View resized");
+        if (e.getComponent().getWidth() / 3 <= 180) {
+            userInfoPanel.setVisible(false);
+            revalidate();
+        } else {
+            userInfoPanel.setVisible(true);
+            revalidate();
+        }
     }
 }

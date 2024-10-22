@@ -6,8 +6,9 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
 
-public class RegisterView extends JPanel {
+public class RegisterView extends JPanel implements ComponentResizeListener {
     private JButton backButton;
     private JButton registerButton;
     private JTextField nameField;
@@ -15,13 +16,16 @@ public class RegisterView extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JPasswordField confirmPasswordField;
+    private JLabel thumbLabel;
 
     public RegisterView() {
         setName("Register View");
-        setLayout(new MigLayout("fill, insets 0, align center center", "[]0[]"));
+        setLayout(new MigLayout("fill, insets 0, align center center, gap 0"));
 
         initComponents();
         initEvents();
+
+        Application.getInstance().componentResizeListener = this;
     }
 
     private void initComponents() {
@@ -31,13 +35,13 @@ public class RegisterView extends JPanel {
         final int thumbHeight = thumbIcon.getIconHeight() * thumbWidth / thumbIcon.getIconWidth();
         Image thumbImage = thumbIcon.getImage().getScaledInstance(thumbWidth, thumbHeight, Image.SCALE_SMOOTH);
         thumbIcon = new ImageIcon(thumbImage);
-        JLabel thumbLabel = new JLabel(thumbIcon);
-        add(thumbLabel);
+        thumbLabel = new JLabel(thumbIcon);
+        add(thumbLabel, "hidemode 3, sg 1, w 50::");
 
         // Container
         JPanel container = new JPanel();
-        container.setLayout(new MigLayout("fill", "[center]", "[center]"));
-        add(container);
+        container.setLayout(new MigLayout("fill, insets 16", "[center]", "[center]"));
+        add(container, "grow, sg 1");
 
         // Register Form
         JPanel registerForm = new JPanel();
@@ -126,5 +130,16 @@ public class RegisterView extends JPanel {
         registerButton.addActionListener(e -> {
             Application.getInstance().setRoot(new HomeView());
         });
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        if (e.getComponent().getWidth() < 960) {
+            thumbLabel.setVisible(false);
+            revalidate();
+        } else {
+            thumbLabel.setVisible(true);
+            revalidate();
+        }
     }
 }
