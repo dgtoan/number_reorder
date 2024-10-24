@@ -4,7 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import view.ComponentResizeListener;
-import view.LoginScreen;
+import view.LoginView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,10 +81,11 @@ public class Application extends JFrame {
 
 
     public static void main(String[] args) {
+        System.out.println("App Starting . . .");
         EventQueue.invokeLater(() -> {
             Application app = Application.getInstance();
             app.getInstance().setVisible(true);
-            app.setRoot(new LoginScreen());
+            app.setRoot(new LoginView());
         });
     }
 }

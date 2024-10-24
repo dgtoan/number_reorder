@@ -5,6 +5,7 @@ import main.Application;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 
 // UI description:
@@ -30,11 +31,24 @@ public class HomeView extends JPanel implements ComponentResizeListener {
 
     private void initUserInfo() {
         userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap"));
-        userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:darken(@background, 5%);" +
-                "arc:16");
+        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap", "[center]"));
+//        userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
+//                "background:lighten(@background, 20%);" +
+//                "arc:16");
         add(userInfoPanel, "grow, hidemode 3, w 256::");
+
+        ImageIcon avatarIcon = new ImageIcon("assets/user_avatar.png");
+        final int avatarWidth = 80;
+        final int avatarHeight = avatarIcon.getIconHeight() * avatarWidth / avatarIcon.getIconWidth();
+        Image avatarImage = avatarIcon.getImage().getScaledInstance(avatarWidth, avatarHeight, Image.SCALE_SMOOTH);
+        avatarIcon = new ImageIcon(avatarImage);
+        JLabel avatarLabel = new JLabel(avatarIcon);
+        userInfoPanel.add(avatarLabel);
+
+        JLabel usernameLabel = new JLabel("Dương Thị Hồng Hoan");
+        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +4;");
+        userInfoPanel.add(usernameLabel);
     }
 
     private void initRankingTable() {

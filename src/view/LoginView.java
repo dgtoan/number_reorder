@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 
-public class LoginScreen extends JPanel implements ComponentResizeListener {
+public class LoginView extends JPanel implements ComponentResizeListener {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -16,8 +16,8 @@ public class LoginScreen extends JPanel implements ComponentResizeListener {
     private JLabel registerButton;
     private JLabel thumbLabel;
 
-    public LoginScreen() {
-        setName("Login Screen");
+    public LoginView() {
+        setName("Login View");
         setLayout(new MigLayout("fill, insets 0, align center center, gap 0"));
 
         initComponents();
