@@ -2,6 +2,7 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
+import model.ObjectWrapper;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ import java.awt.event.ComponentEvent;
 // UI description:
 // 1/3 left: user info: avatar, username, rank, elo, total games, win rate, history button, logout button
 // 2/3 right: ranking table: index, name, elo, total games, win rate, invite button
-public class HomeView extends JPanel implements ComponentResizeListener {
+public class HomeView extends BaseView {
     JPanel userInfoPanel;
 
     public HomeView() {
@@ -70,5 +71,10 @@ public class HomeView extends JPanel implements ComponentResizeListener {
             userInfoPanel.setVisible(true);
             revalidate();
         }
+    }
+
+    @Override
+    public void onDataReceived(ObjectWrapper data) {
+
     }
 }

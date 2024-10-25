@@ -2,13 +2,15 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
+import model.ObjectWrapper;
+import model.Player;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 
-public class LoginView extends JPanel implements ComponentResizeListener {
+public class LoginView extends BaseView {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -155,4 +157,20 @@ public class LoginView extends JPanel implements ComponentResizeListener {
         }
     }
 
+    @Override
+    public void onDataReceived(ObjectWrapper data) {
+        if (data.getPerformative() == ObjectWrapper.LOGIN) {
+            Object response = data.getData();
+
+            if (response instanceof Player) {
+                Application.getInstance().setRoot(new HomeView());
+            } else {
+                String message = (String) response;
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        message,
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }
 }
