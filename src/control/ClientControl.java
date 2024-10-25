@@ -2,7 +2,7 @@ package control;
 
 import model.IPAddress;
 import model.ObjectWrapper;
-import view.BaseView;
+import view.base.BaseView;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

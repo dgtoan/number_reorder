@@ -1,4 +1,4 @@
-package view;
+package view.base;
 
 import java.awt.event.ComponentEvent;
 

@@ -4,9 +4,9 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import control.ClientControl;
-import view.BaseView;
-import view.ComponentResizeListener;
-import view.LoginView;
+import view.base.BaseView;
+import view.base.ComponentResizeListener;
+import view.HomeView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,7 +101,7 @@ public class Application extends JFrame {
         EventQueue.invokeLater(() -> {
             Application app = Application.getInstance();
             app.getInstance().setVisible(true);
-            app.setRoot(new LoginView());
+            app.setRoot(new HomeView());
         });
     }
 }
