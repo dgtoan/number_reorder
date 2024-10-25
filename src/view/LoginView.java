@@ -5,6 +5,7 @@ import main.Application;
 import model.ObjectWrapper;
 import model.Player;
 import net.miginfocom.swing.MigLayout;
+import view.base.BaseView;
 
 import javax.swing.*;
 import java.awt.*;

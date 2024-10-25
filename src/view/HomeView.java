@@ -4,62 +4,241 @@ import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
 import model.ObjectWrapper;
 import net.miginfocom.swing.MigLayout;
+import view.base.BaseView;
+import view.home_components.InvitePanel;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 
-// UI description:
-// 1/3 left: user info: avatar, username, rank, elo, total games, win rate, history button, logout button
-// 2/3 right: ranking table: index, name, elo, total games, win rate, invite button
 public class HomeView extends BaseView {
     JPanel userInfoPanel;
+    JLabel usernameLabel;
+    JButton historyButton;
+    JButton logoutButton;
+    JTable rankingTable;
+
+    String rank = "#1";
+    String elo = "1500";
+    String totalGames = "100";
+    String winRate = "50%";
 
     public HomeView() {
         setName("Home View");
-        setLayout(new MigLayout("fill, insets 16", "[]16[][]", ""));
+        setLayout(new MigLayout("fill, insets 16", "[center]", ""));
 
         initComponents();
         initEvents();
 
         Application.getInstance().componentResizeListener = this;
-    }
 
-    private void initComponents() {
-        initUserInfo();
-        initRankingTable();
-    }
-
-    private void initUserInfo() {
-        userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap", "[center]"));
-//        userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
-//                "background:lighten(@background, 20%);" +
-//                "arc:16");
-        add(userInfoPanel, "grow, hidemode 3, w 256::");
-
-        ImageIcon avatarIcon = new ImageIcon("assets/user_avatar.png");
-        final int avatarWidth = 80;
-        final int avatarHeight = avatarIcon.getIconHeight() * avatarWidth / avatarIcon.getIconWidth();
-        Image avatarImage = avatarIcon.getImage().getScaledInstance(avatarWidth, avatarHeight, Image.SCALE_SMOOTH);
-        avatarIcon = new ImageIcon(avatarImage);
-        JLabel avatarLabel = new JLabel(avatarIcon);
-        userInfoPanel.add(avatarLabel);
-
-        JLabel usernameLabel = new JLabel("Dương Thị Hồng Hoan");
-        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "font:bold +4;");
-        userInfoPanel.add(usernameLabel);
-    }
-
-    private void initRankingTable() {
-        JTable rankingTable = new JTable();
-        JScrollPane rankingScrollPane = new JScrollPane(rankingTable);
-        add(rankingScrollPane, "span 3, grow");
+        addMockData();
     }
 
     private void initEvents() {
+        historyButton.addActionListener(e -> {
+            System.out.println("Show history");
+        });
 
+        logoutButton.addActionListener(e -> {
+            System.out.println("Logout");
+        });
+
+        rankingTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = rankingTable.rowAtPoint(evt.getPoint());
+                int col = rankingTable.columnAtPoint(evt.getPoint());
+                if (col == 5) {
+                    TableCellEditor cellEditor = rankingTable.getCellEditor(row, col);
+                    cellEditor.stopCellEditing();
+                    if (rankingTable.getValueAt(row, col) instanceof Boolean) {
+                        boolean isOnline = (Boolean) rankingTable.getValueAt(row, col);
+                        if (isOnline) {
+                            System.out.println("Invite player " + row);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void initComponents() {
+        initUserInfoPanel();
+        initRankingTable();
+        initRankingTablePanel();
+    }
+
+    private void addMockData() {
+        // add mock data
+        String[] columnNames = {"STT", "Người chơi", "Elo", "Số trận", "Tỉ lệ thắng", "Mời đấu"};
+        Object[][] data = {
+                {"1", "Duong Van Toan", "1500", "100", "50%", true},
+                {"2", "Nguyen Van A", "1400", "90", "45%", true},
+                {"3", "Tran Thi B", "1300", "80", "40%", false},
+                {"4", "Le Van C", "1200", "70", "35%", false},
+                {"5", "Pham Van D", "1100", "60", "30%", false},
+                {"6", "Hoang Thi E", "1000", "50", "25%", true},
+                {"7", "Do Van F", "900", "40", "20%", true},
+                {"8", "Nguyen Thi G", "800", "30", "15%", false},
+                {"9", "Tran Van H", "700", "20", "10%", false},
+                {"10", "Le Thi I", "600", "10", "5%", false},
+                {"11", "Pham Van K", "500", "5", "2.5%", false},
+                {"12", "Hoang Van L", "400", "2", "1%", false},
+                {"13", "Do Thi M", "300", "1", "0.5%", false},
+                {"14", "Nguyen Van N", "200", "0", "0%", false},
+                {"15", "Tran Van O", "100", "0", "0%", false},
+        };
+
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        rankingTable.setModel(model);
+
+        rankingTable.getColumnModel().getColumn(0).setPreferredWidth(48);
+        rankingTable.getColumnModel().getColumn(1).setPreferredWidth(256);
+        rankingTable.getColumnModel().getColumn(2).setPreferredWidth(128);
+        rankingTable.getColumnModel().getColumn(3).setPreferredWidth(128);
+        rankingTable.getColumnModel().getColumn(4).setPreferredWidth(128);
+        rankingTable.getColumnModel().getColumn(5).setPreferredWidth(128);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        rankingTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        rankingTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        rankingTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        rankingTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        rankingTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+
+        rankingTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                boolean isOnline = value instanceof Boolean && (Boolean) value;
+                return new InvitePanel(isOnline);
+            }
+        });
+    }
+
+    private void initRankingTable() {
+        rankingTable = new JTable();
+        rankingTable.setShowGrid(true);
+        rankingTable.getTableHeader().setReorderingAllowed(false);
+        rankingTable.setRowHeight(48);
+        rankingTable.setRowSelectionAllowed(false);
+        rankingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        rankingTable.getTableHeader().setPreferredSize(new Dimension(0, 32));
+        rankingTable.getTableHeader().putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:tint(@accentColor, 90%);" +
+                "font:bold;");
+    }
+
+    private void initUserInfoPanel() {
+        userInfoPanel = new JPanel();
+        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap", "[center]", "[center]"));
+        userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:lighten(@background, 5%);" +
+                "arc:32");
+        add(userInfoPanel, "dock west, hidemode 3");
+
+        // user info container
+        JPanel userInfoContainer = new JPanel();
+        userInfoContainer.setLayout(new MigLayout("fill, insets 8", "[center]"));
+        userInfoContainer.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:tint(@accentColor, 95%);" +
+                "border:1,1,1,1,@accentColor;" +
+                "arc:32");
+        userInfoPanel.add(userInfoContainer);
+
+        // avatar
+        JLabel avatarLabel = new JLabel();
+        ImageIcon avatarIcon = new ImageIcon("assets/user_avatar.png");
+        Image avatarImage = avatarIcon.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        avatarLabel.setIcon(new ImageIcon(avatarImage));
+        userInfoContainer.add(avatarLabel, "wrap 16, w 64::, gaptop 16");
+
+        // username
+        usernameLabel = new JLabel("Duong Van Toan");
+        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:semibold +4; " +
+                "foreground:lighten(@foreground, 20%);");
+        userInfoContainer.add(usernameLabel, "wrap 32");
+
+        // stats container
+        JPanel statsContainer = new JPanel();
+        statsContainer.setLayout(new MigLayout("fill, insets 0", "[]8[]", "[]8[]"));
+        statsContainer.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:tint(@accentColor, 95%);");
+        userInfoContainer.add(statsContainer, "wrap 32");
+
+        // stats items
+        statsContainer.add(getStatsItem("Hạng", rank), "sg statsItem");
+        statsContainer.add(getStatsItem("Elo", elo), "sg statsItem, wrap");
+        statsContainer.add(getStatsItem("Tổng số trận", totalGames), "sg statsItem");
+        statsContainer.add(getStatsItem("Tỉ lệ thắng", winRate), "sg statsItem");
+
+        // history button
+        ImageIcon historyIcon = new ImageIcon("assets/history_icon.png");
+        Image historyImage = historyIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        historyButton = new JButton("Lịch sử đấu", new ImageIcon(historyImage));
+        userInfoContainer.add(historyButton, "h 32::, gapbottom 16");
+
+        // logout panel
+        JPanel logoutPanel = new JPanel();
+        logoutPanel.setLayout(new MigLayout("fill", "[center]", ""));
+        logoutPanel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:lighten(@background, 5%);");
+        userInfoPanel.add(logoutPanel, "dock south, grow, gap 16 16 16 16");
+
+        ImageIcon logoutIcon = new ImageIcon("assets/logout_icon.png");
+        Image logoutImage = logoutIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        logoutButton = new JButton("Đăng xuất", new ImageIcon(logoutImage));
+        logoutButton.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:lighten(@foreground, 50%);");
+        logoutPanel.add(logoutButton, "grow");
+    }
+
+    private void initRankingTablePanel() {
+        JPanel rankingTablePanel = new JPanel(new MigLayout("fill, insets 0", "[center]", "[shrink]16[grow]"));
+        add(rankingTablePanel, "grow");
+
+        // ranking title
+        JLabel rankingTitleLabel = new JLabel("Bảng xếp hạng");
+        rankingTitleLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +8;" +
+                "foreground:lighten(@foreground, 20%);");
+        rankingTablePanel.add(rankingTitleLabel, "wrap");
+
+        // ranking table
+        rankingTablePanel.add(new JScrollPane(rankingTable), "grow");
+    }
+
+    private JPanel getStatsItem(String title, String value) {
+        JPanel statsItem = new JPanel();
+        statsItem.setLayout(new MigLayout("fill", "[center]", "[center]"));
+        statsItem.putClientProperty(FlatClientProperties.STYLE, "" +
+                "background:lighten(@background, 5%);" +
+                "border:1,1,1,1,@accentColor;" +
+                "arc:16");
+
+        JLabel titleLabel = new JLabel(title);
+        titleLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "foreground:lighten(@foreground, 20%);");
+        statsItem.add(titleLabel, "dock north, gap 8 8 8 8");
+
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                "font:bold +4; " +
+                "foreground:lighten(@foreground, 20%);");
+        statsItem.add(valueLabel, "gapbottom 8");
+
+        return statsItem;
     }
 
     @Override

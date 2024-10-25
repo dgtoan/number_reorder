@@ -1,4 +1,4 @@
-package view;
+package view.base;
 
 import model.ObjectWrapper;
 
