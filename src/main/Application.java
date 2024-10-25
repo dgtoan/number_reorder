@@ -3,6 +3,8 @@ package main;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
+import control.ClientControl;
+import view.BaseView;
 import view.ComponentResizeListener;
 import view.LoginView;
 
@@ -10,9 +12,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Stack;
 
 public class Application extends JFrame {
     private final JPanel navigator = new JPanel(new CardLayout());
+    private ClientControl clientControl;
+
+    private Stack<BaseView> backStack;
 
     private static final Application instance = new Application();
 
@@ -26,6 +32,9 @@ public class Application extends JFrame {
         setLocationRelativeTo(null);
         navigator.setBounds(0, 0, 1280, 720);
         add(navigator);
+
+        clientControl = new ClientControl();
+        backStack = new Stack<>();
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -47,9 +56,10 @@ public class Application extends JFrame {
         FlatLightLaf.setup();
     }
 
-    public void setRoot(JPanel panel) {
+    public void setRoot(BaseView panel) {
         System.out.println("Navigation Log: Set root to " + panel.getName());
-
+        clientControl.setBaseView(panel);
+        backStack.push(panel);
         panel.setBounds(getBounds());
         navigator.removeAll();
         navigator.add(panel, panel.getName());
@@ -57,9 +67,10 @@ public class Application extends JFrame {
         cardLayout.next(navigator);
     }
 
-    public void nextTo(JPanel panel) {
+    public void nextTo(BaseView panel) {
         System.out.println("Navigation Log: Next to " + panel.getName());
-
+        clientControl.setBaseView(panel);
+        backStack.push(panel);
         panel.setBounds(getBounds());
         navigator.add(panel, panel.getName());
         CardLayout cardLayout = (CardLayout) navigator.getLayout();
@@ -72,6 +83,8 @@ public class Application extends JFrame {
             return;
         }
 
+        clientControl.setBaseView(backStack.pop());
+
         System.out.println("Navigation Log: Back");
 
         CardLayout cardLayout = (CardLayout) navigator.getLayout();
@@ -79,6 +92,9 @@ public class Application extends JFrame {
         navigator.remove(navigator.getComponentCount() - 1);
     }
 
+    public boolean sendData(Object obj) {
+        return clientControl.sendData(obj);
+    }
 
     public static void main(String[] args) {
         System.out.println("App Starting . . .");

@@ -2,13 +2,14 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
+import model.ObjectWrapper;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 
-public class RegisterView extends JPanel implements ComponentResizeListener {
+public class RegisterView extends BaseView {
     private JButton backButton;
     private JButton registerButton;
     private JTextField nameField;
@@ -141,5 +142,10 @@ public class RegisterView extends JPanel implements ComponentResizeListener {
             thumbLabel.setVisible(true);
             revalidate();
         }
+    }
+
+    @Override
+    public void onDataReceived(ObjectWrapper data) {
+
     }
 }
