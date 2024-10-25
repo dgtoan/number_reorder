@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import control.ClientControl;
+import view.LoginView;
 import view.base.BaseView;
 import view.base.ComponentResizeListener;
 import view.HomeView;
@@ -101,7 +102,7 @@ public class Application extends JFrame {
         EventQueue.invokeLater(() -> {
             Application app = Application.getInstance();
             app.getInstance().setVisible(true);
-            app.setRoot(new HomeView());
+            app.setRoot(new LoginView());
         });
     }
 }
