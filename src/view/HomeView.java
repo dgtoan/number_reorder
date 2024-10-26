@@ -39,28 +39,17 @@ public class HomeView extends BaseView {
         initComponents();
         initEvents();
 
-        // Fetch data
-        fetchData();
-
         // Mock data
         usernameLabel.setText("--- --- ---");
-        setUserStats("#5", "1200", "10", "80%");
+        setUserStats("--", "----", "--", "---");
         setTableModel(new Object[][]{
-                {"1", "Duong Van Toan", "1500", "100", "50%", "Online"},
-                {"2", "Nguyen Van A", "1400", "90", "45%", "Online"},
-                {"3", "Tran Thi B", "1300", "80", "40%", "5 minutes ago"},
-                {"4", "Le Van C", "1200", "70", "35%", "Playing"},
-                {"5", "Pham Van D", "1100", "60", "30%", "6 minutes ago"},
-                {"6", "Hoang Thi E", "1000", "50", "25%", "Online"},
-                {"7", "Do Van F", "900", "40", "20%", "Online"},
-                {"8", "Nguyen Thi G", "800", "30", "15%", "2 minutes ago"},
-                {"9", "Tran Van H", "700", "20", "10%", "Playing"},
-                {"10", "Le Thi I", "600", "10", "5%", "5 minutes ago"},
-                {"11", "Pham Van K", "500", "5", "2.5%", "5 days ago"},
-                {"12", "Hoang Van L", "400", "2", "1%", "2 days ago"},
-                {"13", "Do Thi M", "300", "1", "0.5%", "5 minutes ago"},
-                {"14", "Nguyen Van N", "200", "0", "0%", "5 minutes ago"},
-                {"15", "Tran Van O", "100", "0", "0%", "5 minutes ago"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+                {"-", "--- --- ---", "---", "--", "--", "-----"},
+
         });
         setUserOnlineStatus("Offline", 0);
     }
@@ -280,7 +269,7 @@ public class HomeView extends BaseView {
         switch (data.getPerformative()) {
             case ObjectWrapper.PLAYER_LIST -> {
                 ArrayList<Player> players = (ArrayList<Player>) data.getData();
-                final Object[][] tableData = new Object[players.size()][6];
+                Object[][] tableData = new Object[players.size()][6];
 
                 for (int i = 0; i < players.size(); i++) {
 
@@ -305,7 +294,6 @@ public class HomeView extends BaseView {
                             DataFormatter.getStatus(player)
                     };
                 }
-
                 setTableModel(tableData);
             }
         }

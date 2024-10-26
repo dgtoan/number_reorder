@@ -104,8 +104,12 @@ public class ClientControl {
                     Object obj = ois.readObject();
                     if (baseView != null & obj instanceof ObjectWrapper) {
                         if (((ObjectWrapper) obj).getPerformative() == ObjectWrapper.LOGIN) {
-                            Player player = (Player) ((ObjectWrapper) obj).getData();
-                            currentPlayerId = player.getId();
+                            try {
+                                Player player = (Player) ((ObjectWrapper) obj).getData();
+                                currentPlayerId = player.getId();
+                            } catch (Exception e) {
+                                System.out.println("Login failed!");
+                            }
                         }
                         baseView.onDataReceived((ObjectWrapper) obj);
                     }
