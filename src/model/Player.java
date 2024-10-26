@@ -10,15 +10,19 @@ public class Player implements Serializable {
     private boolean isPlaying;
     private LocalDateTime lastSeen;
     private boolean isOnline;
+    private int totalGames;
+    private int winGames;
 
     // Constructor
-    public Player(int id, String playerName, int elo, boolean isPlaying, LocalDateTime lastSeen, boolean isOnline) {
+    public Player(int id, String playerName, int elo, boolean isPlaying, LocalDateTime lastSeen, boolean isOnline, int totalGames, int winGames) {
         this.id = id;
         this.playerName = playerName;
         this.elo = elo;
         this.isPlaying = isPlaying;
         this.lastSeen = lastSeen;
         this.isOnline = isOnline;
+        this.totalGames = totalGames;
+        this.winGames = winGames;
     }
 
     // Getters và Setters
@@ -70,6 +74,22 @@ public class Player implements Serializable {
         isOnline = online;
     }
 
+    public int getTotalGames() {
+        return totalGames;
+    }
+
+    public void setTotalGames(int totalGames) {
+        this.totalGames = totalGames;
+    }
+
+    public int getWinGames() {
+        return winGames;
+    }
+
+    public void setWinGames(int winGames) {
+        this.winGames = winGames;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
@@ -79,6 +99,8 @@ public class Player implements Serializable {
                 ", isPlaying=" + isPlaying +
                 ", lastSeen=" + lastSeen +
                 ", isOnline=" + isOnline +
+                ", totalGames=" + totalGames +
+                ", winGames=" + winGames +
                 '}';
     }
 }
