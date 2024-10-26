@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -88,6 +89,14 @@ public class Player implements Serializable {
 
     public void setWinGames(int winGames) {
         this.winGames = winGames;
+    }
+
+    public String getWinRate() {
+        if (totalGames == 0) {
+            return "0%";
+        }
+
+        return String.format("%.2f", (double) winGames / totalGames * 100) + "%";
     }
 
     @Override

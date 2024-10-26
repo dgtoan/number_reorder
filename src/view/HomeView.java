@@ -3,7 +3,9 @@ package view;
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
 import model.ObjectWrapper;
+import model.Player;
 import net.miginfocom.swing.MigLayout;
+import utils.DataFormatter;
 import view.base.BaseView;
 import view.home_components.InvitePanel;
 
@@ -13,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 
 public class HomeView extends BaseView {
     JPanel userInfoPanel;
@@ -36,8 +39,11 @@ public class HomeView extends BaseView {
         initComponents();
         initEvents();
 
+        // Fetch data
+        fetchData();
+
         // Mock data
-        usernameLabel.setText("Duong Van Toan");
+        usernameLabel.setText("--- --- ---");
         setUserStats("#5", "1200", "10", "80%");
         setTableModel(new Object[][]{
                 {"1", "Duong Van Toan", "1500", "100", "50%", "Online"},
@@ -57,6 +63,11 @@ public class HomeView extends BaseView {
                 {"15", "Tran Van O", "100", "0", "0%", "5 minutes ago"},
         });
         setUserOnlineStatus("Offline", 0);
+    }
+
+    private void fetchData() {
+        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.PLAYER_LIST, null);
+        Application.getInstance().sendData(data);
     }
 
     private void initEvents() {
@@ -266,6 +277,37 @@ public class HomeView extends BaseView {
 
     @Override
     public void onDataReceived(ObjectWrapper data) {
+        switch (data.getPerformative()) {
+            case ObjectWrapper.PLAYER_LIST -> {
+                ArrayList<Player> players = (ArrayList<Player>) data.getData();
+                final Object[][] tableData = new Object[players.size()][6];
 
+                for (int i = 0; i < players.size(); i++) {
+
+                    if (players.get(i).getId() == Application.getInstance().getCurrentPlayerId()) {
+                        Player player = players.get(i);
+                        usernameLabel.setText(player.getPlayerName());
+                        setUserStats(
+                                "#" + (i + 1),
+                                String.valueOf(player.getElo()),
+                                String.valueOf(player.getTotalGames()),
+                                player.getWinRate()
+                        );
+                    }
+
+                    Player player = players.get(i);
+                    tableData[i] = new Object[]{
+                            i + 1,
+                            player.getPlayerName(),
+                            player.getElo(),
+                            player.getTotalGames(),
+                            player.getWinRate(),
+                            DataFormatter.getStatus(player)
+                    };
+                }
+
+                setTableModel(tableData);
+            }
+        }
     }
 }

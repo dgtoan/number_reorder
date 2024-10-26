@@ -105,4 +105,8 @@ public class Application extends JFrame {
             app.setRoot(new LoginView());
         });
     }
+
+    public Integer getCurrentPlayerId() {
+        return clientControl.getCurrentPlayerId();
+    }
 }

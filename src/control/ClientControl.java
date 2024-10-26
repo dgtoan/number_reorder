@@ -2,6 +2,7 @@ package control;
 
 import model.IPAddress;
 import model.ObjectWrapper;
+import model.Player;
 import view.base.BaseView;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public class ClientControl {
     private BaseView baseView;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+    private Integer currentPlayerId;
 
     public ClientControl() {
         try {
@@ -80,6 +82,14 @@ public class ClientControl {
         this.baseView = baseView;
     }
 
+    public Integer getCurrentPlayerId() {
+        return currentPlayerId;
+    }
+
+    public void setCurrentPlayerId(Integer currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
+    }
+
     class ClientListening extends Thread {
 
         public ClientListening() {
@@ -93,6 +103,10 @@ public class ClientControl {
                 while (true) {
                     Object obj = ois.readObject();
                     if (baseView != null & obj instanceof ObjectWrapper) {
+                        if (((ObjectWrapper) obj).getPerformative() == ObjectWrapper.LOGIN) {
+                            Player player = (Player) ((ObjectWrapper) obj).getData();
+                            currentPlayerId = player.getId();
+                        }
                         baseView.onDataReceived((ObjectWrapper) obj);
                     }
                 }

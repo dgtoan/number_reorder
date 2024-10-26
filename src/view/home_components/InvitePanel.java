@@ -31,7 +31,14 @@ public class InvitePanel extends JPanel {
             playingLabel.putClientProperty(FlatClientProperties.STYLE, "" +
                     "foreground:#007AFF;");
             add(playingLabel, "grow, gapx 8 8");
-        } else {
+        } else if (onlineStatus == "You") {
+            // You status
+            JLabel youLabel = new JLabel(onlineStatus);
+            youLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "foreground:@accentColor;");
+            add(youLabel, "grow, gapx 8 8");
+        }
+        else {
             JLabel offlineLabel = new JLabel(onlineStatus);
             offlineLabel.putClientProperty(FlatClientProperties.STYLE, "" +
                     "foreground:#FF3B30;");
