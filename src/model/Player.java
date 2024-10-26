@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class Player implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1904L;
+
     private int id;  // Kiểu int thay vì String
     private String playerName;
     private int elo;

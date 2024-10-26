@@ -1,9 +1,12 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public class Room implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1905L;
     private int id;  // Kiểu int thay vì String
     private int firstPlayer;
     private int secondPlayer;

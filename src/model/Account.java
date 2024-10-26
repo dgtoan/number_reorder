@@ -1,8 +1,11 @@
 package model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Account implements Serializable  {
+    @Serial
+    private static final long serialVersionUID = 1906L;
     private String username;
     private String pass;
     private int playerId;
