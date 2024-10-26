@@ -21,21 +21,42 @@ public class HomeView extends BaseView {
     JButton logoutButton;
     JTable rankingTable;
 
-    String rank = "#1";
-    String elo = "1500";
-    String totalGames = "100";
-    String winRate = "50%";
+    JPanel userRankPanel;
+    JPanel userEloPanel;
+    JPanel userTotalGamesPanel;
+    JPanel userWinRatePanel;
+
+    final String[] columnNames = {"STT", "Người chơi", "Elo", "Số trận", "Tỉ lệ thắng", "Mời đấu"};
 
     public HomeView() {
         setName("Home View");
         setLayout(new MigLayout("fill, insets 16", "[center]", ""));
+        Application.getInstance().componentResizeListener = this;
 
         initComponents();
         initEvents();
 
-        Application.getInstance().componentResizeListener = this;
-
-        addMockData();
+        // Mock data
+        usernameLabel.setText("Duong Van Toan");
+        setUserStats("#5", "1200", "10", "80%");
+        setTableModel(new Object[][]{
+                {"1", "Duong Van Toan", "1500", "100", "50%", "Online"},
+                {"2", "Nguyen Van A", "1400", "90", "45%", "Online"},
+                {"3", "Tran Thi B", "1300", "80", "40%", "5 minutes ago"},
+                {"4", "Le Van C", "1200", "70", "35%", "Playing"},
+                {"5", "Pham Van D", "1100", "60", "30%", "6 minutes ago"},
+                {"6", "Hoang Thi E", "1000", "50", "25%", "Online"},
+                {"7", "Do Van F", "900", "40", "20%", "Online"},
+                {"8", "Nguyen Thi G", "800", "30", "15%", "2 minutes ago"},
+                {"9", "Tran Van H", "700", "20", "10%", "Playing"},
+                {"10", "Le Thi I", "600", "10", "5%", "5 minutes ago"},
+                {"11", "Pham Van K", "500", "5", "2.5%", "5 days ago"},
+                {"12", "Hoang Van L", "400", "2", "1%", "2 days ago"},
+                {"13", "Do Thi M", "300", "1", "0.5%", "5 minutes ago"},
+                {"14", "Nguyen Van N", "200", "0", "0%", "5 minutes ago"},
+                {"15", "Tran Van O", "100", "0", "0%", "5 minutes ago"},
+        });
+        setUserOnlineStatus("Offline", 0);
     }
 
     private void initEvents() {
@@ -66,33 +87,18 @@ public class HomeView extends BaseView {
         });
     }
 
-    private void initComponents() {
-        initUserInfoPanel();
-        initRankingTable();
-        initRankingTablePanel();
+    private void setUserStats(String rank, String elo, String totalGames, String winRate) {
+        ((JLabel) userRankPanel.getComponent(1)).setText(rank);
+        ((JLabel) userEloPanel.getComponent(1)).setText(elo);
+        ((JLabel) userTotalGamesPanel.getComponent(1)).setText(totalGames);
+        ((JLabel) userWinRatePanel.getComponent(1)).setText(winRate);
     }
 
-    private void addMockData() {
-        // add mock data
-        String[] columnNames = {"STT", "Người chơi", "Elo", "Số trận", "Tỉ lệ thắng", "Mời đấu"};
-        Object[][] data = {
-                {"1", "Duong Van Toan", "1500", "100", "50%", true},
-                {"2", "Nguyen Van A", "1400", "90", "45%", true},
-                {"3", "Tran Thi B", "1300", "80", "40%", false},
-                {"4", "Le Van C", "1200", "70", "35%", false},
-                {"5", "Pham Van D", "1100", "60", "30%", false},
-                {"6", "Hoang Thi E", "1000", "50", "25%", true},
-                {"7", "Do Van F", "900", "40", "20%", true},
-                {"8", "Nguyen Thi G", "800", "30", "15%", false},
-                {"9", "Tran Van H", "700", "20", "10%", false},
-                {"10", "Le Thi I", "600", "10", "5%", false},
-                {"11", "Pham Van K", "500", "5", "2.5%", false},
-                {"12", "Hoang Van L", "400", "2", "1%", false},
-                {"13", "Do Thi M", "300", "1", "0.5%", false},
-                {"14", "Nguyen Van N", "200", "0", "0%", false},
-                {"15", "Tran Van O", "100", "0", "0%", false},
-        };
+    private void setUserOnlineStatus(String status, int row) {
+        rankingTable.setValueAt(status, row, 5);
+    }
 
+    private void setTableModel(Object[][] data) {
         DefaultTableModel model = new DefaultTableModel(data, columnNames) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -101,29 +107,31 @@ public class HomeView extends BaseView {
         };
 
         rankingTable.setModel(model);
-
         rankingTable.getColumnModel().getColumn(0).setPreferredWidth(48);
         rankingTable.getColumnModel().getColumn(1).setPreferredWidth(256);
         rankingTable.getColumnModel().getColumn(2).setPreferredWidth(128);
         rankingTable.getColumnModel().getColumn(3).setPreferredWidth(128);
         rankingTable.getColumnModel().getColumn(4).setPreferredWidth(128);
-        rankingTable.getColumnModel().getColumn(5).setPreferredWidth(128);
+        rankingTable.getColumnModel().getColumn(5).setPreferredWidth(192);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         rankingTable.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         rankingTable.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         rankingTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        rankingTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-        rankingTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 
         rankingTable.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer(){
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                boolean isOnline = value instanceof Boolean && (Boolean) value;
-                return new InvitePanel(isOnline);
+                return new InvitePanel((String) value);
             }
         });
+    }
+
+    private void initComponents() {
+        initUserInfoPanel();
+        initRankingTable();
+        initRankingTablePanel();
     }
 
     private void initRankingTable() {
@@ -164,7 +172,7 @@ public class HomeView extends BaseView {
         userInfoContainer.add(avatarLabel, "wrap 16, w 64::, gaptop 16");
 
         // username
-        usernameLabel = new JLabel("Duong Van Toan");
+        usernameLabel = new JLabel("");
         usernameLabel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:semibold +4; " +
                 "foreground:lighten(@foreground, 20%);");
@@ -178,10 +186,14 @@ public class HomeView extends BaseView {
         userInfoContainer.add(statsContainer, "wrap 32");
 
         // stats items
-        statsContainer.add(getStatsItem("Hạng", rank), "sg statsItem");
-        statsContainer.add(getStatsItem("Elo", elo), "sg statsItem, wrap");
-        statsContainer.add(getStatsItem("Tổng số trận", totalGames), "sg statsItem");
-        statsContainer.add(getStatsItem("Tỉ lệ thắng", winRate), "sg statsItem");
+        userRankPanel = getStatsItem("Hạng", "");
+        userEloPanel = getStatsItem("Elo", "");
+        userTotalGamesPanel = getStatsItem("Tổng số trận", "");
+        userWinRatePanel = getStatsItem("Tỉ lệ thắng", "");
+        statsContainer.add(userRankPanel, "sg statsItem");
+        statsContainer.add(userEloPanel, "sg statsItem, wrap");
+        statsContainer.add(userTotalGamesPanel, "sg statsItem");
+        statsContainer.add(userWinRatePanel, "sg statsItem");
 
         // history button
         ImageIcon historyIcon = new ImageIcon("assets/history_icon.png");

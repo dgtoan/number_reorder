@@ -6,10 +6,10 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 
 public class InvitePanel extends JPanel {
-    boolean isOnline;
+    String onlineStatus;
     JButton inviteButton;
-    public InvitePanel(boolean isOnline) {
-        this.isOnline = isOnline;
+    public InvitePanel(String onlineStatus) {
+        this.onlineStatus = onlineStatus;
         initComponents();
     }
 
@@ -23,19 +23,19 @@ public class InvitePanel extends JPanel {
                 "font:bold;" +
                 "foreground:#34C759;" +
                 "border:1,1,1,1,#34C759,1,16;");
-        JLabel offlineLabel = new JLabel("Offline");
-        offlineLabel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:#FF3B30;");
-        if (isOnline) {
+        if (onlineStatus == "Online") {
             add(inviteButton, "grow, h 32!, gapx 8 8");
+        } else if (onlineStatus == "Playing") {
+            // Playing status
+            JLabel playingLabel = new JLabel(onlineStatus);
+            playingLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "foreground:#007AFF;");
+            add(playingLabel, "grow, gapx 8 8");
         } else {
+            JLabel offlineLabel = new JLabel(onlineStatus);
+            offlineLabel.putClientProperty(FlatClientProperties.STYLE, "" +
+                    "foreground:#FF3B30;");
             add(offlineLabel, "grow, gapx 8 8");
         }
-    }
-
-    public void setOnline(boolean isOnline) {
-        this.isOnline = isOnline;
-        removeAll();
-        initComponents();
     }
 }
