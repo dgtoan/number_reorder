@@ -4,6 +4,7 @@ import model.IPAddress;
 import model.ObjectWrapper;
 import view.base.BaseView;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -15,14 +16,22 @@ public class ClientControl {
     private ArrayList<ObjectWrapper> myFunction;
     private IPAddress serverAddress = new IPAddress("localhost", 8001);
     private BaseView baseView;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public ClientControl() {
-        myFunction = new ArrayList<ObjectWrapper>();
-
-        System.out.println("Client control created!");
+        try {
+            myFunction = new ArrayList<ObjectWrapper>();
+            openConnection();
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("Client control created!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error when creating client control!");
+        }
     }
 
-    public boolean openConnection() {
+    public void openConnection() {
         try {
             socket = new Socket(serverAddress.getHost(), serverAddress.getPort());
             myListening = new ClientListening();
@@ -31,16 +40,12 @@ public class ClientControl {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error when connecting to the server!");
-            return false;
         }
-        return true;
     }
 
     public boolean sendData(Object obj) {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(obj);
-
         } catch (Exception e) {
             //e.printStackTrace();
             System.out.println("Error when sending data to the server!");
@@ -84,10 +89,10 @@ public class ClientControl {
         @Override
         public void run() {
             try {
+                ois = new ObjectInputStream(socket.getInputStream());
                 while (true) {
-                    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                     Object obj = ois.readObject();
-                    if (obj instanceof ObjectWrapper) {
+                    if (baseView != null & obj instanceof ObjectWrapper) {
                         baseView.onDataReceived((ObjectWrapper) obj);
                     }
                 }
