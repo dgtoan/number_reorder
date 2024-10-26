@@ -15,7 +15,7 @@ public class ClientControl {
     private Socket socket;
     private ClientListening myListening;
     private ArrayList<ObjectWrapper> myFunction;
-    private IPAddress serverAddress = new IPAddress("localhost", 8001);
+    private IPAddress serverAddress = new IPAddress("192.168.138.76", 8001);
     private BaseView baseView;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 public class DataFormatter {
     public static String getStatus(Player player) {
+        System.out.println(player);
         int currentPlayerId = Application.getInstance().getCurrentPlayerId();
 
         if (player.getId() == currentPlayerId) {
@@ -21,15 +22,15 @@ public class DataFormatter {
         } else {
             LocalDateTime lastSeen = player.getLastSeen();
             LocalDateTime now = LocalDateTime.now();
-            long minutes = lastSeen.until(now, java.time.temporal.ChronoUnit.MINUTES);
-            if (minutes < 1) {
-                return "Online";
-            } else if (minutes < 60) {
-                return minutes + " minutes ago";
-            } else if (minutes < 1440) {
-                return minutes / 60 + " hours ago";
+            long seconds = lastSeen == null ? 0 : lastSeen.until(now, java.time.temporal.ChronoUnit.SECONDS);
+            if (seconds < 60) {
+                return "Just now";
+            } else if (seconds < 3600) {
+                return seconds / 60 + " minutes ago";
+            } else if (seconds < 86400) {
+                return seconds / 3600 + " hours ago";
             } else {
-                return minutes / 1440 + " days ago";
+                return seconds / 86400 + " days ago";
             }
         }
     }
