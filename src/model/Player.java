@@ -69,4 +69,16 @@ public class Player implements Serializable {
     public void setOnline(boolean online) {
         isOnline = online;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", playerName='" + playerName + '\'' +
+                ", elo=" + elo +
+                ", isPlaying=" + isPlaying +
+                ", lastSeen=" + lastSeen +
+                ", isOnline=" + isOnline +
+                '}';
+    }
 }

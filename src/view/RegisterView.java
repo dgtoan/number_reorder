@@ -2,13 +2,16 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
+import model.Account;
 import model.ObjectWrapper;
+import model.Player;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
+import java.util.Map;
 
 public class RegisterView extends BaseView {
     private JButton backButton;
@@ -130,7 +133,39 @@ public class RegisterView extends BaseView {
         });
 
         registerButton.addActionListener(e -> {
-            Application.getInstance().setRoot(new HomeView());
+            final String username = usernameField.getText();
+            final char[] password = passwordField.getPassword();
+            final char[] confirmPassword = confirmPasswordField.getPassword();
+            final String name = nameField.getText();
+
+            System.out.println("Username: " + username + ", Password: " + new String(password) + ", Confirm Password: " + new String(confirmPassword) + ", Name: " + name);
+
+            if (username.isEmpty() || password.length == 0 || confirmPassword.length == 0 || name.isEmpty()) {
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        "Vui lòng nhập đầy đủ thông tin",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!new String(password).equals(new String(confirmPassword))) {
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        "Mật khẩu không khớp",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            Map<String, Object> body = Map.of("playerName", name,  "account", new Account(username, new String(password)));
+            ObjectWrapper obj = new ObjectWrapper(ObjectWrapper.REGISTER, body);
+            final boolean isSuccess = Application.getInstance().sendData(obj);
+
+            if (!isSuccess) {
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        "Server đang bảo trì!",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         });
     }
 
@@ -147,6 +182,20 @@ public class RegisterView extends BaseView {
 
     @Override
     public void onDataReceived(ObjectWrapper data) {
+        System.out.println("Register View: " + data.getPerformative());
+        if (data.getPerformative() == ObjectWrapper.LOGIN || data.getPerformative() == ObjectWrapper.REGISTER) {
+            Object response = data.getData();
+            if (response instanceof Player) {
+                System.out.println("Sign up successfully!");
+                Application.getInstance().setRoot(new HomeView());
+            } else {
+                String message = (String) response;
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        message,
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        }
 
     }
 }
