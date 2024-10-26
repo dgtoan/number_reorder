@@ -2,6 +2,7 @@ package view;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
+import model.Account;
 import model.ObjectWrapper;
 import model.Player;
 import net.miginfocom.swing.MigLayout;
@@ -10,6 +11,7 @@ import view.base.BaseView;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
+import java.util.Map;
 
 public class LoginView extends BaseView {
     private JTextField usernameField;
@@ -124,14 +126,29 @@ public class LoginView extends BaseView {
 
     private void initEvents() {
         loginButton.addActionListener(e -> {
-            if (usernameField.getText().isEmpty() || passwordField.getPassword().length == 0) {
+            final String username = usernameField.getText();
+            final char[] password = passwordField.getPassword();
+
+            System.out.println("Username: " + username + ", Password: " + new String(password));
+
+            if (username.isEmpty() || password.length == 0) {
                 JOptionPane.showMessageDialog(Application.getInstance(),
                         "Vui lòng nhập đầy đủ thông tin",
                         "Thông báo",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            Application.getInstance().setRoot(new HomeView());
+
+            Map<String, Object> body = Map.of("account", new Account(username, new String(password)));
+            ObjectWrapper obj = new ObjectWrapper(ObjectWrapper.LOGIN, body);
+            final boolean isSuccess = Application.getInstance().sendData(obj);
+
+            if (!isSuccess) {
+                JOptionPane.showMessageDialog(Application.getInstance(),
+                        "Server đang bảo trì!",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         });
 
         forgotPasswordButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -160,10 +177,11 @@ public class LoginView extends BaseView {
 
     @Override
     public void onDataReceived(ObjectWrapper data) {
+        System.out.println("LoginView: " + data.getPerformative());
         if (data.getPerformative() == ObjectWrapper.LOGIN) {
             Object response = data.getData();
-
             if (response instanceof Player) {
+                System.out.println("Login successfully!");
                 Application.getInstance().setRoot(new HomeView());
             } else {
                 String message = (String) response;

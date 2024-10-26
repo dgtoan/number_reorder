@@ -4,10 +4,10 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import control.ClientControl;
+import model.ObjectWrapper;
 import view.LoginView;
 import view.base.BaseView;
 import view.base.ComponentResizeListener;
-import view.HomeView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,7 +93,7 @@ public class Application extends JFrame {
         navigator.remove(navigator.getComponentCount() - 1);
     }
 
-    public boolean sendData(Object obj) {
+    public boolean sendData(ObjectWrapper obj) {
         return clientControl.sendData(obj);
     }
 
