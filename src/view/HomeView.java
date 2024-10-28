@@ -5,7 +5,8 @@ import main.Application;
 import model.ObjectWrapper;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
-import view.home_components.InvitePanel;
+import view.components.InvitePanel;
+import view.components.UserInfoPanel;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -15,16 +16,11 @@ import java.awt.*;
 import java.awt.event.ComponentEvent;
 
 public class HomeView extends BaseView {
-    JPanel userInfoPanel;
-    JLabel usernameLabel;
+    JPanel userInfoContainer;
+    UserInfoPanel userInfoPanel;
     JButton historyButton;
     JButton logoutButton;
     JTable rankingTable;
-
-    JPanel userRankPanel;
-    JPanel userEloPanel;
-    JPanel userTotalGamesPanel;
-    JPanel userWinRatePanel;
 
     final String[] columnNames = {"STT", "Người chơi", "Elo", "Số trận", "Tỉ lệ thắng", "Mời đấu"};
 
@@ -37,8 +33,7 @@ public class HomeView extends BaseView {
         initEvents();
 
         // Mock data
-        usernameLabel.setText("Duong Van Toan");
-        setUserStats("#5", "1200", "10", "80%");
+        setUserInfo("Duong Van Toan", "#5", "1200", "10", "80%");
         setTableModel(new Object[][]{
                 {"1", "Duong Van Toan", "1500", "100", "50%", "Online"},
                 {"2", "Nguyen Van A", "1400", "90", "45%", "Online"},
@@ -87,11 +82,8 @@ public class HomeView extends BaseView {
         });
     }
 
-    private void setUserStats(String rank, String elo, String totalGames, String winRate) {
-        ((JLabel) userRankPanel.getComponent(1)).setText(rank);
-        ((JLabel) userEloPanel.getComponent(1)).setText(elo);
-        ((JLabel) userTotalGamesPanel.getComponent(1)).setText(totalGames);
-        ((JLabel) userWinRatePanel.getComponent(1)).setText(winRate);
+    private void setUserInfo(String username, String rank, String elo, String totalGames, String winRate) {
+        userInfoPanel.setUserInfo(username, rank, elo, totalGames, winRate);
     }
 
     private void setUserOnlineStatus(String status, int row) {
@@ -148,65 +140,29 @@ public class HomeView extends BaseView {
     }
 
     private void initUserInfoPanel() {
-        userInfoPanel = new JPanel();
-        userInfoPanel.setLayout(new MigLayout("fill, insets 16, wrap", "[center]", "[center]"));
-        userInfoPanel.putClientProperty(FlatClientProperties.STYLE, "" +
+        userInfoContainer = new JPanel();
+        userInfoContainer.setLayout(new MigLayout("fill, insets 16, wrap", "[center]", "[center]"));
+        userInfoContainer.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:lighten(@background, 5%);" +
                 "arc:32");
-        add(userInfoPanel, "dock west, hidemode 3");
+        add(userInfoContainer, "dock west, hidemode 3");
 
         // user info container
-        JPanel userInfoContainer = new JPanel();
-        userInfoContainer.setLayout(new MigLayout("fill, insets 8", "[center]"));
-        userInfoContainer.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:tint(@accentColor, 95%);" +
-                "border:1,1,1,1,@accentColor;" +
-                "arc:32");
-        userInfoPanel.add(userInfoContainer);
-
-        // avatar
-        JLabel avatarLabel = new JLabel();
-        ImageIcon avatarIcon = new ImageIcon("assets/user_avatar.png");
-        Image avatarImage = avatarIcon.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        avatarLabel.setIcon(new ImageIcon(avatarImage));
-        userInfoContainer.add(avatarLabel, "wrap 16, w 64::, gaptop 16");
-
-        // username
-        usernameLabel = new JLabel("");
-        usernameLabel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "font:semibold +4; " +
-                "foreground:lighten(@foreground, 20%);");
-        userInfoContainer.add(usernameLabel, "wrap 32");
-
-        // stats container
-        JPanel statsContainer = new JPanel();
-        statsContainer.setLayout(new MigLayout("fill, insets 0", "[]8[]", "[]8[]"));
-        statsContainer.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:tint(@accentColor, 95%);");
-        userInfoContainer.add(statsContainer, "wrap 32");
-
-        // stats items
-        userRankPanel = getStatsItem("Hạng", "");
-        userEloPanel = getStatsItem("Elo", "");
-        userTotalGamesPanel = getStatsItem("Tổng số trận", "");
-        userWinRatePanel = getStatsItem("Tỉ lệ thắng", "");
-        statsContainer.add(userRankPanel, "sg statsItem");
-        statsContainer.add(userEloPanel, "sg statsItem, wrap");
-        statsContainer.add(userTotalGamesPanel, "sg statsItem");
-        statsContainer.add(userWinRatePanel, "sg statsItem");
+        userInfoPanel = new UserInfoPanel();
+        userInfoContainer.add(userInfoPanel);
 
         // history button
         ImageIcon historyIcon = new ImageIcon("assets/history_icon.png");
         Image historyImage = historyIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         historyButton = new JButton("Lịch sử đấu", new ImageIcon(historyImage));
-        userInfoContainer.add(historyButton, "h 32::, gapbottom 16");
+        userInfoPanel.add(historyButton, "h 32::, gapx 16, wrap 8");
 
         // logout panel
         JPanel logoutPanel = new JPanel();
         logoutPanel.setLayout(new MigLayout("fill", "[center]", ""));
         logoutPanel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "background:lighten(@background, 5%);");
-        userInfoPanel.add(logoutPanel, "dock south, grow, gap 16 16 16 16");
+        userInfoContainer.add(logoutPanel, "dock south, grow, gap 16 16 16 16");
 
         ImageIcon logoutIcon = new ImageIcon("assets/logout_icon.png");
         Image logoutImage = logoutIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -231,35 +187,13 @@ public class HomeView extends BaseView {
         rankingTablePanel.add(new JScrollPane(rankingTable), "grow");
     }
 
-    private JPanel getStatsItem(String title, String value) {
-        JPanel statsItem = new JPanel();
-        statsItem.setLayout(new MigLayout("fill", "[center]", "[center]"));
-        statsItem.putClientProperty(FlatClientProperties.STYLE, "" +
-                "background:lighten(@background, 5%);" +
-                "border:1,1,1,1,@accentColor;" +
-                "arc:16");
-
-        JLabel titleLabel = new JLabel(title);
-        titleLabel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "foreground:lighten(@foreground, 20%);");
-        statsItem.add(titleLabel, "dock north, gap 8 8 8 8");
-
-        JLabel valueLabel = new JLabel(value);
-        valueLabel.putClientProperty(FlatClientProperties.STYLE, "" +
-                "font:bold +4; " +
-                "foreground:lighten(@foreground, 20%);");
-        statsItem.add(valueLabel, "gapbottom 8");
-
-        return statsItem;
-    }
-
     @Override
     public void componentResized(ComponentEvent e) {
         if (e.getComponent().getWidth() < 640) {
-            userInfoPanel.setVisible(false);
+            userInfoContainer.setVisible(false);
             revalidate();
         } else {
-            userInfoPanel.setVisible(true);
+            userInfoContainer.setVisible(true);
             revalidate();
         }
     }

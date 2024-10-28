@@ -1,4 +1,4 @@
-package view.home_components;
+package view.components;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
