@@ -54,13 +54,27 @@ public class HomeView extends BaseView {
         Application.getInstance().sendData(data);
     }
 
+    private void onLogout() {
+        System.out.println("Logout");
+    }
+
+    private void onInvitePlayer(int row) {
+        System.out.println("Invite player " + row);
+        // for test game view
+        Application.getInstance().nextTo(new GameView());
+    }
+
+    private void onShowHistory() {
+        System.out.println("Show history");
+    }
+
     private void initEvents() {
         historyButton.addActionListener(e -> {
-            System.out.println("Show history");
+            onShowHistory();
         });
 
         logoutButton.addActionListener(e -> {
-            System.out.println("Logout");
+            onLogout();
         });
 
         rankingTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -71,11 +85,8 @@ public class HomeView extends BaseView {
                 if (col == 5) {
                     TableCellEditor cellEditor = rankingTable.getCellEditor(row, col);
                     cellEditor.stopCellEditing();
-                    if (rankingTable.getValueAt(row, col) instanceof Boolean) {
-                        boolean isOnline = (Boolean) rankingTable.getValueAt(row, col);
-                        if (isOnline) {
-                            System.out.println("Invite player " + row);
-                        }
+                    if (rankingTable.getValueAt(row, col) == "Online") {
+                        onInvitePlayer(row);
                     }
                 }
             }

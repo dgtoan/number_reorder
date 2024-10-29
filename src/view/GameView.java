@@ -64,29 +64,41 @@ public class GameView extends BaseView {
         setOpponentGameState(opponentInitial, opponentResult);
     }
 
+    private void onSurrender() {
+        System.out.println("Surrender");
+    }
+
+    private void onDone() {
+        System.out.println("Done");
+    }
+
+    private void onChangeMyGameState(List<Integer> newInitial, List<Integer> newResult) {
+        setMyGameState(newInitial, newResult);
+    }
+
     private void initEvents() {
         for (int i = 0; i < 10; i++) {
             myInitialButtons[i].addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
                 int index = Integer.parseInt(button.getText());
                 myResult.add(index);
-                setMyGameState(myInitial, myResult);
+                onChangeMyGameState(myInitial, myResult);
             });
 
             myResultButtons[i].addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
                 int index = Integer.parseInt(button.getText());
                 myResult.remove(Integer.valueOf(index));
-                setMyGameState(myInitial, myResult);
+                onChangeMyGameState(myInitial, myResult);
             });
         }
 
         surrenderButton.addActionListener(e -> {
-            System.out.println("Surrender");
+            onSurrender();
         });
 
         doneButton.addActionListener(e -> {
-            System.out.println("Done");
+            onDone();
         });
     }
 
