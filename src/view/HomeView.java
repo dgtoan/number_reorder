@@ -65,7 +65,7 @@ public class HomeView extends BaseView {
     }
 
     private void onShowHistory() {
-        System.out.println("Show history");
+        Application.getInstance().nextTo(new HistoryView());
     }
 
     private void initEvents() {
