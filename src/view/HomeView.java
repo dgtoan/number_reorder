@@ -37,16 +37,17 @@ public class HomeView extends BaseView {
 
         // Mock data
         setUserInfo("--- --- ---", "--", "----", "--", "---");
-        setTableModel(new Object[][]{
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-                {"-", "--- --- ---", "---", "--", "--", "-----"},
-
-        });
-        setUserOnlineStatus("Offline", 0);
+        // have error on windows
+//        setTableModel(new Object[][]{
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//                {"-", "--- --- ---", "---", "--", "--", "-----"},
+//
+//        });
+//        setUserOnlineStatus("Offline", 0);
     }
 
     private void fetchData() {
@@ -65,7 +66,7 @@ public class HomeView extends BaseView {
     }
 
     private void onShowHistory() {
-        System.out.println("Show history");
+        Application.getInstance().nextTo(new HistoryView());
     }
 
     private void initEvents() {
