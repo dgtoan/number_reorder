@@ -176,7 +176,7 @@ public class LoginView extends BaseView {
     }
 
     @Override
-    public void onDataReceived(ObjectWrapper data) {
+    public void onDataReceivedForView(ObjectWrapper data) {
         System.out.println("LoginView: " + data.getPerformative());
         if (data.getPerformative() == ObjectWrapper.LOGIN) {
             Object response = data.getData();

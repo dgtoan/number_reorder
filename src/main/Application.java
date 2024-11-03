@@ -93,6 +93,14 @@ public class Application extends JFrame {
         navigator.remove(navigator.getComponentCount() - 1);
     }
 
+    public void closeAllDialogs() {
+        for (Window window : Window.getWindows()) {
+            if (window instanceof JDialog) {
+                window.dispose();
+            }
+        }
+    }
+
     public boolean sendData(ObjectWrapper obj) {
         return clientControl.sendData(obj);
     }
