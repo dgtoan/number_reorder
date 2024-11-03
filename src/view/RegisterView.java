@@ -181,7 +181,7 @@ public class RegisterView extends BaseView {
     }
 
     @Override
-    public void onDataReceived(ObjectWrapper data) {
+    public void onDataReceivedForView(ObjectWrapper data) {
         System.out.println("Register View: " + data.getPerformative());
         if (data.getPerformative() == ObjectWrapper.LOGIN || data.getPerformative() == ObjectWrapper.REGISTER) {
             Object response = data.getData();

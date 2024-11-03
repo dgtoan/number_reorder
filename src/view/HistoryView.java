@@ -165,6 +165,6 @@ public class HistoryView extends BaseView {
     }
 
     @Override
-    public void onDataReceived(ObjectWrapper data) {
+    public void onDataReceivedForView(ObjectWrapper data) {
     }
 }

@@ -57,12 +57,19 @@ public class HomeView extends BaseView {
 
     private void onLogout() {
         System.out.println("Logout");
+        // TODO: logout
+        Application.getInstance().setRoot(new LoginView());
     }
 
     private void onInvitePlayer(int row) {
         System.out.println("Invite player " + row);
+        int res = JOptionPane.showOptionDialog(this, "Đang chờ phản hồi từ đối thủ, vui lòng đợi", "Đang chờ", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+        if (res == JOptionPane.CLOSED_OPTION) {
+            // TODO: send cancel invite
+        }
+
         // for test game view
-        Application.getInstance().nextTo(new GameView());
+//        Application.getInstance().nextTo(new GameView());
     }
 
     private void onShowHistory() {
@@ -211,7 +218,7 @@ public class HomeView extends BaseView {
     }
 
     @Override
-    public void onDataReceived(ObjectWrapper data) {
+    public void onDataReceivedForView(ObjectWrapper data) {
         switch (data.getPerformative()) {
             case ObjectWrapper.PLAYER_LIST -> {
                 ArrayList<Player> players = (ArrayList<Player>) data.getData();

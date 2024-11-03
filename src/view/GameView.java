@@ -65,11 +65,40 @@ public class GameView extends BaseView {
     }
 
     private void onSurrender() {
-        System.out.println("Surrender");
+        int res = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn chịu thua?", "Chịu thua", JOptionPane.YES_NO_OPTION);
+        if (res == JOptionPane.YES_OPTION) {
+            // TODO: send surrender to server
+            Application.getInstance().back();
+        }
     }
 
     private void onDone() {
-        System.out.println("Done");
+        if (!myInitialButtons[0].isEnabled()) {
+            JOptionPane.showMessageDialog(this, "Bạn đã hoàn thành rồi");
+            return;
+        }
+
+        // TODO: send my result to server for checking
+
+        // disable all buttons
+        for (int i = 0; i < 10; i++) {
+            myInitialButtons[i].setEnabled(false);
+            myResultButtons[i].setEnabled(false);
+        }
+        JOptionPane.showMessageDialog(this, "Đã gửi kết quả, vui lòng chờ đối thủ hoàn thành");
+    }
+
+    private void onGameOver(boolean isWin) {
+        Application.getInstance().closeAllDialogs();
+
+        String message = isWin ? "Bạn đã thắng, bạn có muốn đấu lại?" : "Bạn đã thua, bạn có muốn đấu lại?";
+        int res = JOptionPane.showConfirmDialog(this, message, isWin ? "Bạn thắng" : "Bạn thua", JOptionPane.YES_NO_OPTION);
+
+        if (res == JOptionPane.OK_OPTION) {
+            // TODO: send invite play again
+        } else {
+            Application.getInstance().back();
+        }
     }
 
     private void onChangeMyGameState(List<Integer> newInitial, List<Integer> newResult) {
@@ -289,6 +318,8 @@ public class GameView extends BaseView {
         for (int i = 0; i < 10; i++) {
             myResultButtons[i] = new JButton();
             myResultButtons[i].putClientProperty(FlatClientProperties.STYLE, "" +
+                    "disabledText:tint(@accentColor, 20%);" +
+                    "disabledBackground:tint(tint(@accentColor, 50%), 95%);" +
                     "foreground:@accentColor;" +
                     "background:tint(@accentColor, 95%);" +
                     "border:1,1,1,1,@accentColor,1,16;" +
@@ -330,8 +361,10 @@ public class GameView extends BaseView {
     }
 
     @Override
-    public void onDataReceived(ObjectWrapper data) {
+    public void onDataReceivedForView(ObjectWrapper data) {
         // TODO: on time remaining data received call setTimeRemaining()
         // TODO: on opponent's data received call setOpponentGameState()
+
+        // TODO: on game finished (time out or surrender or both done) call onGameOver()
     }
 }
