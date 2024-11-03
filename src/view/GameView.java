@@ -73,6 +73,7 @@ public class GameView extends BaseView {
     }
 
     private void onChangeMyGameState(List<Integer> newInitial, List<Integer> newResult) {
+        // TODO: update new game state to server
         setMyGameState(newInitial, newResult);
     }
 
@@ -330,6 +331,7 @@ public class GameView extends BaseView {
 
     @Override
     public void onDataReceived(ObjectWrapper data) {
-
+        // TODO: on time remaining data received call setTimeRemaining()
+        // TODO: on opponent's data received call setOpponentGameState()
     }
 }
