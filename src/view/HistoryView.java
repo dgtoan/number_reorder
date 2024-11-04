@@ -3,6 +3,8 @@ package view;
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
 import model.ObjectWrapper;
+import model.Player;
+import model.Room;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
 import view.components.InvitePanel;
@@ -14,6 +16,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class HistoryView extends BaseView {
     JPanel userInfoContainer;
@@ -30,17 +35,26 @@ public class HistoryView extends BaseView {
 
         initComponents();
         initEvents();
+        fetchData();
 
         // Mock data
         setUserInfo("--- --- ---", "--", "----", "--", "---");
-        setTableModel(new Object[][]{
-                {"1", "Nguyễn Văn A", "2024/11/04 18:00", "Thắng", "+10"},
-                {"2", "Nguyễn Văn C", "2024/11/04 18:00", "Thua", "-10"},
-                {"3", "Nguyễn Văn E", "2024/11/04 18:00", "Thắng", "+12"},
-                {"4", "Nguyễn Văn G", "2024/11/04 18:00", "Thắng", "+10"},
-                {"5", "Nguyễn Văn I", "2024/11/04 18:00", "Thua", "-10"},
-                {"6", "Nguyễn Văn K", "2024/11/04 18:00", "Null", "0"},
-        });
+//        setTableModel(new Object[][]{
+//                {"1", "Nguyễn Văn A", "2024/11/04 18:00", "Thắng", "+10"},
+//                {"2", "Nguyễn Văn C", "2024/11/04 18:00", "Thua", "-10"},
+//                {"3", "Nguyễn Văn E", "2024/11/04 18:00", "Thắng", "+12"},
+//                {"4", "Nguyễn Văn G", "2024/11/04 18:00", "Thắng", "+10"},
+//                {"5", "Nguyễn Văn I", "2024/11/04 18:00", "Thua", "-10"},
+//                {"6", "Nguyễn Văn K", "2024/11/04 18:00", "Null", "0"},
+//        });
+    }
+
+    private void fetchData() {
+        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.ROOM_LIST, null);
+        Application.getInstance().sendData(data);
+
+        data = new ObjectWrapper(ObjectWrapper.PLAYER_LIST, null);
+        Application.getInstance().sendData(data);
     }
 
     private void setTableModel(Object[][] data) {
@@ -166,5 +180,59 @@ public class HistoryView extends BaseView {
 
     @Override
     public void onDataReceivedForView(ObjectWrapper data) {
+        if (data.getPerformative() == ObjectWrapper.ROOM_LIST) {
+            ArrayList<Room> rooms = (ArrayList<Room>) data.getData();
+            ArrayList<Room> historyRooms = new ArrayList<>();
+
+            System.out.println("Room list: " + rooms.size());
+
+            for (Room room : rooms) {
+                if (room.getTimeLeft() == 0) {
+                    historyRooms.add(room);
+                }
+            }
+
+            System.out.println("History room list: " + historyRooms.size());
+
+
+            Object[][] tableData = new Object[historyRooms.size()][5];
+
+            for (int i = 0; i < historyRooms.size(); i++) {
+                Room room = historyRooms.get(i);
+                final int oppositePlayerId = room.getFirstPlayer() == Application.getInstance().getCurrentPlayerId() ? room.getSecondPlayer() : room.getFirstPlayer();
+                String playerName = "";
+
+                for (Player player : Application.getInstance().getPlayerList()) {
+                    if (player.getId() == oppositePlayerId) {
+                        playerName = player.getPlayerName();
+                        break;
+                    }
+                }
+
+                tableData[i][0] = i + 1;
+                tableData[i][1] = playerName;
+                tableData[i][2] = room.getCreateAt().toString();
+                tableData[i][3] = room.getWinner() == -1 ? "Hòa" : room.getWinner() == Application.getInstance().getCurrentPlayerId() ? "Thắng" : "Thua";
+                tableData[i][4] = room.getWinner() == -1 ? "0" : room.getWinner() == Application.getInstance().getCurrentPlayerId() ? "+10" : "-10";
+            }
+
+            setTableModel(tableData);
+        }
+
+        if (data.getPerformative() == ObjectWrapper.PLAYER_LIST) {
+            ArrayList<Player> players = (ArrayList<Player>) data.getData();
+
+            Collections.sort(players, (p1, p2) -> p2.getElo() - p1.getElo());
+
+            int currentPlayer = Application.getInstance().getCurrentPlayerId();
+
+            for (int i = 0; i < players.size(); i++) {
+                if (players.get(i).getId() == currentPlayer) {
+                    Player player = players.get(i);
+                    setUserInfo(player.getPlayerName(), "#" + String.valueOf(i + 1), String.valueOf(player.getElo()), String.valueOf(player.getTotalGames()), player.getWinRate());
+                    break;
+                }
+            }
+        }
     }
 }
