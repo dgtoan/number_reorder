@@ -54,6 +54,7 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
         Application.getInstance().closeAllDialogs();
         int res = JOptionPane.showConfirmDialog(Application.getInstance(), from.getPlayerName() + " muốn mời bạn chơi, bạn có đồng ý không?", "Mời chơi", JOptionPane.YES_NO_OPTION);
         if (res == JOptionPane.YES_OPTION) {
+            System.out.println("Invite accepted");
             Map<String, Object> body = Map.of(
                     "playerId", Application.getInstance().getCurrentPlayerId()
             );
@@ -61,6 +62,7 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
             ObjectWrapper data = new ObjectWrapper(ObjectWrapper.ACCEPT_INVITATION, body);
             Application.getInstance().sendData(data);
         } else {
+            System.out.println("Decline invitation");
             Map<String, Object> body = Map.of(
                     "playerId", Application.getInstance().getCurrentPlayerId()
             );

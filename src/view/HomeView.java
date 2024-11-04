@@ -74,6 +74,7 @@ public class HomeView extends BaseView {
 
         int res = JOptionPane.showOptionDialog(this, "Đang chờ phản hồi từ đối thủ, vui lòng đợi", "Đang chờ", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
         if (res == JOptionPane.CLOSED_OPTION) {
+            System.out.println("Cancel invite");
             Map<String, Object> cancelBody = Map.of("playerId", Application.getInstance().getPlayerList().get(row).getId());
             ObjectWrapper cancelData = new ObjectWrapper(ObjectWrapper.CANCEL_INVITATION, cancelBody);
             Application.getInstance().sendData(cancelData);
