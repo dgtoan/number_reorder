@@ -57,7 +57,10 @@ public class HomeView extends BaseView {
 
     private void onLogout() {
         System.out.println("Logout");
-        // TODO: logout
+
+        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.LOGOUT, null);
+        Application.getInstance().sendData(data);
+
         Application.getInstance().setRoot(new LoginView());
     }
 

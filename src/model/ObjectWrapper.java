@@ -12,6 +12,7 @@ public class ObjectWrapper implements Serializable {
 
     public static final int LOGIN = 1;
     public static final int REGISTER = 2;
+    public static final int LOGOUT = 12;
 
     public static final int PLAYER = 3;
     public static final int PLAYER_LIST = 4;
