@@ -17,6 +17,7 @@ import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class HomeView extends BaseView {
     JPanel userInfoContainer;
@@ -66,9 +67,16 @@ public class HomeView extends BaseView {
 
     private void onInvitePlayer(int row) {
         System.out.println("Invite player " + row);
+
+        Map<String, Object> body = Map.of("playerId", Application.getInstance().getPlayerList().get(row).getId());
+        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.INVITE, body);
+        Application.getInstance().sendData(data);
+
         int res = JOptionPane.showOptionDialog(this, "Đang chờ phản hồi từ đối thủ, vui lòng đợi", "Đang chờ", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
         if (res == JOptionPane.CLOSED_OPTION) {
-            // TODO: send cancel invite
+            Map<String, Object> cancelBody = Map.of("playerId", Application.getInstance().getPlayerList().get(row).getId());
+            ObjectWrapper cancelData = new ObjectWrapper(ObjectWrapper.CANCEL_INVITATION, cancelBody);
+            Application.getInstance().sendData(cancelData);
         }
 
         // for test game view

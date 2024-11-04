@@ -15,11 +15,12 @@ public class ClientControl {
     private Socket socket;
     private ClientListening myListening;
     private ArrayList<ObjectWrapper> myFunction;
-    private IPAddress serverAddress = new IPAddress("192.168.196.1", 8001);
+    private IPAddress serverAddress = new IPAddress("localhost", 8001);
     private BaseView baseView;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private Integer currentPlayerId;
+    private ArrayList<Player> playerList;
 
     public ClientControl() {
         try {
@@ -90,6 +91,14 @@ public class ClientControl {
         this.currentPlayerId = currentPlayerId;
     }
 
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(ArrayList<Player> playerList) {
+        this.playerList = playerList;
+    }
+
     class ClientListening extends Thread {
 
         public ClientListening() {
@@ -111,6 +120,11 @@ public class ClientControl {
                                 System.out.println("Login failed!");
                             }
                         }
+
+                        if (((ObjectWrapper) obj).getPerformative() == ObjectWrapper.PLAYER_LIST) {
+                            playerList = (ArrayList<Player>) ((ObjectWrapper) obj).getData();
+                        }
+
                         baseView.onDataReceived((ObjectWrapper) obj);
                     }
                 }

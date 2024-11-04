@@ -5,6 +5,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.fonts.jetbrains_mono.FlatJetBrainsMonoFont;
 import control.ClientControl;
 import model.ObjectWrapper;
+import model.Player;
 import view.LoginView;
 import view.base.BaseView;
 import view.base.ComponentResizeListener;
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Application extends JFrame {
@@ -116,5 +118,9 @@ public class Application extends JFrame {
 
     public Integer getCurrentPlayerId() {
         return clientControl.getCurrentPlayerId();
+    }
+
+    public ArrayList<Player> getPlayerList() {
+        return clientControl.getPlayerList();
     }
 }
