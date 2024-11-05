@@ -7,6 +7,8 @@ import model.Player;
 import net.miginfocom.swing.MigLayout;
 import utils.DataFormatter;
 import view.base.BaseView;
+import view.components.AppDialog;
+import view.components.AppDialogAction;
 import view.components.InvitePanel;
 import view.components.UserInfoPanel;
 
@@ -72,13 +74,20 @@ public class HomeView extends BaseView {
         ObjectWrapper data = new ObjectWrapper(ObjectWrapper.INVITE, body);
         Application.getInstance().sendData(data);
 
-        int res = JOptionPane.showOptionDialog(this, "Đang chờ phản hồi từ đối thủ, vui lòng đợi", "Đang chờ", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
-        if (res == JOptionPane.CLOSED_OPTION) {
-            System.out.println("Cancel invite");
-            Map<String, Object> cancelBody = Map.of("playerId", Application.getInstance().getPlayerList().get(row).getId());
-            ObjectWrapper cancelData = new ObjectWrapper(ObjectWrapper.CANCEL_INVITATION, cancelBody);
-            Application.getInstance().sendData(cancelData);
-        }
+        AppDialog.getInstance().showMessageDialog(
+                "Đang chờ",
+                "Đang chờ phản hồi từ đối thủ, vui lòng đợi",
+                "Hủy",
+                new AppDialogAction() {
+                    @Override
+                    public void onNo() {
+                        System.out.println("Cancel invite");
+                        Map<String, Object> cancelBody = Map.of("playerId", Application.getInstance().getPlayerList().get(row).getId());
+                        ObjectWrapper cancelData = new ObjectWrapper(ObjectWrapper.CANCEL_INVITATION, cancelBody);
+                        Application.getInstance().sendData(cancelData);
+                    }
+                }
+        );
 
         // for test game view
 //        Application.getInstance().nextTo(new GameView());

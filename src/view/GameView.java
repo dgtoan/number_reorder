@@ -5,6 +5,8 @@ import main.Application;
 import model.ObjectWrapper;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
+import view.components.AppDialog;
+import view.components.AppDialogAction;
 import view.components.UserInfoPanel;
 
 import javax.swing.*;
@@ -65,16 +67,24 @@ public class GameView extends BaseView {
     }
 
     private void onSurrender() {
-        int res = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn chịu thua?", "Chịu thua", JOptionPane.YES_NO_OPTION);
-        if (res == JOptionPane.YES_OPTION) {
-            // TODO: send surrender to server
-            Application.getInstance().back();
-        }
+        AppDialog.getInstance().showOptionDialog(
+                "Chịu thua",
+                "Bạn có chắc chắn muốn chịu thua?",
+                "Chịu thua",
+                "Hủy",
+                new AppDialogAction() {
+                    @Override
+                    public void onYes() {
+                        // TODO: send surrender to server
+                        Application.getInstance().back();
+                    }
+                }
+        );
     }
 
     private void onDone() {
         if (!myInitialButtons[0].isEnabled()) {
-            JOptionPane.showMessageDialog(this, "Bạn đã hoàn thành rồi");
+            AppDialog.getInstance().showMessageDialog("Thông báo", "Bạn đã hoàn thành rồi");
             return;
         }
 
@@ -85,20 +95,29 @@ public class GameView extends BaseView {
             myInitialButtons[i].setEnabled(false);
             myResultButtons[i].setEnabled(false);
         }
-        JOptionPane.showMessageDialog(this, "Đã gửi kết quả, vui lòng chờ đối thủ hoàn thành");
+        AppDialog.getInstance().showMessageDialog("Thành công", "Đã gửi kết quả, vui lòng chờ đối thủ hoàn thành");
     }
 
     private void onGameOver(boolean isWin) {
         Application.getInstance().closeAllDialogs();
 
         String message = isWin ? "Bạn đã thắng, bạn có muốn đấu lại?" : "Bạn đã thua, bạn có muốn đấu lại?";
-        int res = JOptionPane.showConfirmDialog(this, message, isWin ? "Bạn thắng" : "Bạn thua", JOptionPane.YES_NO_OPTION);
-
-        if (res == JOptionPane.OK_OPTION) {
-            // TODO: send invite play again
-        } else {
-            Application.getInstance().back();
-        }
+        AppDialog.getInstance().showOptionDialog(
+                isWin ? "Bạn thắng" : "Bạn thua",
+                message,
+                "Đấu lại",
+                "Thoát",
+                new AppDialogAction() {
+                    @Override
+                    public void onYes() {
+                        // TODO: send invite play again
+                    }
+                    @Override
+                    public void onNo() {
+                        Application.getInstance().back();
+                    }
+                }
+        );
     }
 
     private void onChangeMyGameState(List<Integer> newInitial, List<Integer> newResult) {

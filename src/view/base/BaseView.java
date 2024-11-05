@@ -4,6 +4,8 @@ import main.Application;
 import model.ObjectWrapper;
 import model.Player;
 import view.GameView;
+import view.components.AppDialog;
+import view.components.AppDialogAction;
 
 import javax.swing.*;
 import java.util.Map;
@@ -40,7 +42,7 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
                 onInviteCanceled();
             }
             case ObjectWrapper.ACCEPT_INVITATION -> {
-                Application.getInstance().closeAllDialogs();
+                AppDialog.getInstance().dispose();
                 Application.getInstance().nextTo(new GameView());
             }
         }
@@ -51,34 +53,43 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
     ;
 
     public void showInviteDialog(Player from) {
-        Application.getInstance().closeAllDialogs();
-        int res = JOptionPane.showConfirmDialog(Application.getInstance(), from.getPlayerName() + " muốn mời bạn chơi, bạn có đồng ý không?", "Mời chơi", JOptionPane.YES_NO_OPTION);
-        if (res == JOptionPane.YES_OPTION) {
-            System.out.println("Invite accepted");
-            Map<String, Object> body = Map.of(
-                    "playerId", Application.getInstance().getCurrentPlayerId()
-            );
+        AppDialog.getInstance().showOptionDialog(
+                "Mời chơi",
+                from.getPlayerName() + " muốn mời bạn chơi, bạn có đồng ý không?",
+                "Đồng ý",
+                "Từ chối",
+                new AppDialogAction() {
+                    @Override
+                    public void onYes() {
+                        System.out.println("Invite accepted");
+                        Map<String, Object> body = Map.of(
+                                "playerId", Application.getInstance().getCurrentPlayerId()
+                        );
 
-            ObjectWrapper data = new ObjectWrapper(ObjectWrapper.ACCEPT_INVITATION, body);
-            Application.getInstance().sendData(data);
-        } else {
-            System.out.println("Decline invitation");
-            Map<String, Object> body = Map.of(
-                    "playerId", Application.getInstance().getCurrentPlayerId()
-            );
+                        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.ACCEPT_INVITATION, body);
+                        Application.getInstance().sendData(data);
+                    }
 
-            ObjectWrapper data = new ObjectWrapper(ObjectWrapper.DECLINE_INVITATION, body);
-            Application.getInstance().sendData(data);
-        }
+                    @Override
+                    public void onNo() {
+                        System.out.println("Decline invitation");
+                        Map<String, Object> body = Map.of(
+                                "playerId", Application.getInstance().getCurrentPlayerId()
+                        );
+
+                        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.DECLINE_INVITATION, body);
+                        Application.getInstance().sendData(data);
+                    }
+                }
+        );
     }
 
     public void showInviteDeclinedDialog(String opponentName) {
-        Application.getInstance().closeAllDialogs();
-        JOptionPane.showConfirmDialog(Application.getInstance(), opponentName + " đã từ chối mời chơi của bạn", "Mời chơi", JOptionPane.DEFAULT_OPTION);
+        AppDialog.getInstance().showMessageDialog("Mời chơi", opponentName + " đã từ chối mời chơi của bạn");
     }
 
     // when opponent cancel invite
     public void onInviteCanceled() {
-        Application.getInstance().closeAllDialogs();
+        AppDialog.getInstance().dispose();
     }
 }
