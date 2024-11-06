@@ -3,6 +3,7 @@ package view;
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
 import model.ObjectWrapper;
+import model.Room;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
 import view.components.AppDialog;
@@ -13,8 +14,7 @@ import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 public class GameView extends BaseView {
@@ -33,10 +33,9 @@ public class GameView extends BaseView {
     JButton[] opponentResultButtons = new JButton[10];
     JButton[] opponentInitialButtons = new JButton[10];
 
-    List<Integer> myResult = new ArrayList<Integer>();
-    List<Integer> myInitial = new ArrayList<Integer>();
-    List<Integer> opponentResult = new ArrayList<Integer>();
-    List<Integer> opponentInitial = new ArrayList<Integer>();
+    ArrayList<String> myResult = new ArrayList<String>();
+    ArrayList<String> myInitial = new ArrayList<String>();
+    int roomId;
 
     public GameView() {
         setName("Game View");
@@ -50,20 +49,7 @@ public class GameView extends BaseView {
         opponentInfoPanel.setUserInfo("Opponent", "#2", "1200");
         myInfoPanel.setUserInfo("Duong Van toan", "#1", "1300");
 
-        setTimeRemaining(26);
-
-        for (int i = 1; i <= 10; i++) {
-            myInitial.add(i);
-            opponentInitial.add(i);
-        }
-
-        Collections.shuffle(myInitial);
-        Collections.shuffle(opponentInitial);
-        opponentResult.add(5);
-        opponentResult.add(2);
-
-        setMyGameState(myInitial, myResult);
-        setOpponentGameState(opponentInitial, opponentResult);
+        setTimeRemaining(0);
     }
 
     private void onSurrender() {
@@ -112,6 +98,7 @@ public class GameView extends BaseView {
                     public void onYes() {
                         // TODO: send invite play again
                     }
+
                     @Override
                     public void onNo() {
                         Application.getInstance().back();
@@ -120,7 +107,7 @@ public class GameView extends BaseView {
         );
     }
 
-    private void onChangeMyGameState(List<Integer> newInitial, List<Integer> newResult) {
+    private void onChangeMyGameState(List<String> newInitial, List<String> newResult) {
         // TODO: update new game state to server
         setMyGameState(newInitial, newResult);
     }
@@ -129,15 +116,25 @@ public class GameView extends BaseView {
         for (int i = 0; i < 10; i++) {
             myInitialButtons[i].addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
-                int index = Integer.parseInt(button.getText());
-                myResult.add(index);
+                myResult.add(button.getText());
+
+                String rs = myResult.toString();
+                Map<String, Object> body = Map.of("roomId", this.roomId, "array", rs);
+                ObjectWrapper obj = new ObjectWrapper(ObjectWrapper.UPDATE_NUMBERS, body);
+                Application.getInstance().sendData(obj);
+
                 onChangeMyGameState(myInitial, myResult);
             });
 
             myResultButtons[i].addActionListener(e -> {
                 JButton button = (JButton) e.getSource();
-                int index = Integer.parseInt(button.getText());
-                myResult.remove(Integer.valueOf(index));
+                myResult.remove(button.getText());
+
+                String rs = myResult.toString();
+                Map<String, Object> body = Map.of("roomId", this.roomId, "array", rs);
+                ObjectWrapper obj = new ObjectWrapper(ObjectWrapper.UPDATE_NUMBERS, body);
+                Application.getInstance().sendData(obj);
+
                 onChangeMyGameState(myInitial, myResult);
             });
         }
@@ -151,7 +148,7 @@ public class GameView extends BaseView {
         });
     }
 
-    private void setMyGameState(List<Integer> myInitial, List<Integer> myResult) {
+    private void setMyGameState(List<String> myInitial, List<String> myResult) {
         for (int i = 0; i < 10; i++) {
             try {
                 myResultButtons[i].setText(String.valueOf(myResult.get(i)));
@@ -160,7 +157,7 @@ public class GameView extends BaseView {
                 myResultButtons[i].setVisible(false);
             }
 
-            Integer initialValue = myInitial.get(i);
+            String initialValue = myInitial.get(i);
             if (myResult.contains(initialValue)) {
                 myInitialButtons[i].setVisible(false);
             } else {
@@ -171,7 +168,7 @@ public class GameView extends BaseView {
         revalidate();
     }
 
-    private void setOpponentGameState(List<Integer> opponentInitial, List<Integer> opponentResult) {
+    private void setOpponentGameState(List<String> opponentInitial, List<String> opponentResult) {
         for (int i = 0; i < 10; i++) {
             try {
                 opponentResultButtons[i].setText(String.valueOf(opponentResult.get(i)));
@@ -180,7 +177,7 @@ public class GameView extends BaseView {
                 opponentResultButtons[i].setVisible(false);
             }
 
-            Integer initialValue = opponentInitial.get(i);
+            String initialValue = opponentInitial.get(i);
             if (opponentResult.contains(initialValue)) {
                 opponentInitialButtons[i].setVisible(false);
             } else {
@@ -381,9 +378,45 @@ public class GameView extends BaseView {
 
     @Override
     public void onDataReceivedForView(ObjectWrapper data) {
-        // TODO: on time remaining data received call setTimeRemaining()
-        // TODO: on opponent's data received call setOpponentGameState()
+        switch (data.getPerformative()) {
+            case ObjectWrapper.ROOM -> {
+                final Room room = (Room) data.getData();
+                System.out.println(room.getTimeLeft());
+                boolean isInRoom = room.getFirstPlayer() == Application.getInstance().getCurrentPlayerId() || room.getSecondPlayer() == Application.getInstance().getCurrentPlayerId();
+                if (isInRoom) {
+                    this.roomId = room.getId();
+                    System.out.println("Room: " + room.getTimeLeft() + " fp " + room.getFirstProblem() + " sp " + room.getSecondProblem() + " fa " + room.getFirstArray() + " sa " + room.getSecondArray());
+                    setTimeRemaining(room.getTimeLeft());
 
-        // TODO: on game finished (time out or surrender or both done) call onGameOver()
+                    final boolean isFirstPlayer = room.getFirstPlayer() == Application.getInstance().getCurrentPlayerId();
+
+                    ArrayList<String> firstProblem = new ArrayList<>(Arrays.asList(room.getFirstProblem().substring(1, room.getFirstProblem().length() - 1).split(", ")));
+                    ArrayList<String> secondProblem = new ArrayList<>(Arrays.asList(room.getSecondProblem().substring(1, room.getSecondProblem().length() - 1).split(", ")));
+
+                    ArrayList<String> firstArray = new ArrayList<>(Arrays.asList(room.getFirstArray().substring(1, room.getFirstArray().length() - 1).split(", ")));
+                    ArrayList<String> secondArray = new ArrayList<>(Arrays.asList(room.getSecondArray().substring(1, room.getSecondArray().length() - 1).split(", ")));
+
+
+                    if (isFirstPlayer) {
+                        setOpponentGameState(secondProblem, secondArray);
+                        setMyGameState(firstProblem, firstArray);
+                        myInitial = firstProblem;
+                        myResult = firstArray;
+                    } else {
+                        setOpponentGameState(firstProblem, firstArray);
+                        setMyGameState(secondProblem, secondArray);
+                        myInitial = secondProblem;
+                        myResult = secondArray;
+                    }
+
+                    System.out.println("My initial: " + myInitial);
+                    System.out.println("My result: " + myResult);
+
+                    if (room.getTimeLeft() == 0) {
+                        onGameOver(room.getWinner() == Application.getInstance().getCurrentPlayerId());
+                    }
+                }
+            }
+        }
     }
 }
