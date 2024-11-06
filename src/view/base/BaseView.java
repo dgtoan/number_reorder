@@ -74,7 +74,7 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
                     public void onNo() {
                         System.out.println("Decline invitation");
                         Map<String, Object> body = Map.of(
-                                "playerId", Application.getInstance().getCurrentPlayerId()
+                                "playerId", from.getId()
                         );
 
                         ObjectWrapper data = new ObjectWrapper(ObjectWrapper.DECLINE_INVITATION, body);
