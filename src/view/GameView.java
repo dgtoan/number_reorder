@@ -422,13 +422,13 @@ public class GameView extends BaseView {
                     if (isFirstPlayer) {
                         setOpponentGameState(secondProblem, secondArray);
                         if (myInitial.size() == 0) {
-                            myInitial = firstArray;
+                            myInitial = firstProblem;
                             setMyGameState(myInitial, myResult);
                         }
                     } else {
                         setOpponentGameState(firstProblem, firstArray);
                         if (myInitial.size() == 0) {
-                            myInitial = secondArray;
+                            myInitial = secondProblem;
                             setMyGameState(myInitial, myResult);
                         }
                     }
