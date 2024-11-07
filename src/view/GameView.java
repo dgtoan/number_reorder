@@ -61,8 +61,9 @@ public class GameView extends BaseView {
                 new AppDialogAction() {
                     @Override
                     public void onYes() {
-                        // TODO: send surrender to server
-                        Application.getInstance().back();
+                        Map<String, Object> body = Map.of("roomId", roomId);
+                        ObjectWrapper obj = new ObjectWrapper(ObjectWrapper.SURRENDER, body);
+                        Application.getInstance().sendData(obj);
                     }
                 }
         );

@@ -1,5 +1,5 @@
 package model;
- 
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,6 +25,8 @@ public class ObjectWrapper implements Serializable {
     public static final int DECLINE_INVITATION = 10;
 
     public static final int UPDATE_NUMBERS = 11;
+
+    public static final int SURRENDER = 13;
 
     public static final ArrayList<Integer> UNAUTHORIZED = new ArrayList<Integer>() {
         {
