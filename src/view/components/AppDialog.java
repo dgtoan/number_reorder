@@ -74,6 +74,10 @@ public class AppDialog extends JFrame {
     }
 
     public void showOptionDialog(String title, String message, String yesButton, String noButton, AppDialogAction action) {
+        showOptionDialog(title, message, yesButton, noButton, action, true);
+    }
+
+    public void showOptionDialog(String title, String message, String yesButton, String noButton, AppDialogAction action, boolean autoDispose) {
         setTitle(title);
         removeWindowListener(getWindowListeners().length > 0 ? getWindowListeners()[0] : null);
         addWindowListener(new WindowAdapter() {
@@ -94,7 +98,9 @@ public class AppDialog extends JFrame {
 
         yesButtonComponent.addActionListener(e -> {
             action.onYes();
-            dispose();
+            if (autoDispose) {
+                dispose();
+            }
         });
         JButton noButtonComponent = new JButton(noButton);
         noButtonComponent.addActionListener(e -> {

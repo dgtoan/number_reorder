@@ -112,14 +112,34 @@ public class GameView extends BaseView {
                     public void onYes() {
                         Application.getInstance().back();
 
-                        // TODO: send invite play again
+                        final boolean isFirstPlayer = room.getFirstPlayer() == Application.getInstance().getCurrentPlayerId();
+                        final int opponentId = isFirstPlayer ? room.getSecondPlayer() : room.getFirstPlayer();
+                        Map<String, Object> body = Map.of("playerId", opponentId);
+                        ObjectWrapper data = new ObjectWrapper(ObjectWrapper.INVITE, body);
+                        Application.getInstance().sendData(data);
+
+                        AppDialog.getInstance().showMessageDialog(
+                                "Đang chờ",
+                                "Đang chờ phản hồi từ đối thủ, vui lòng đợi",
+                                "Hủy",
+                                new AppDialogAction() {
+                                    @Override
+                                    public void onNo() {
+                                        System.out.println("Cancel invite");
+                                        Map<String, Object> cancelBody = Map.of("playerId", opponentId);
+                                        ObjectWrapper cancelData = new ObjectWrapper(ObjectWrapper.CANCEL_INVITATION, cancelBody);
+                                        Application.getInstance().sendData(cancelData);
+                                    }
+                                }
+                        );
                     }
 
                     @Override
                     public void onNo() {
                         Application.getInstance().back();
                     }
-                }
+                },
+                false
         );
     }
 
