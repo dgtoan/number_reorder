@@ -313,12 +313,12 @@ public class GameView extends BaseView {
                 "hoverBorderColor:@accentColor;" +
                 "focusedBorderColor: @accentColor;" +
                 "font:semibold;");
-        myBoardTitle.add(doneButton, "dock east, gap 16 16 16 0, w 96::, h 32::");
+//        myBoardTitle.add(doneButton, "dock east, gap 16 16 16 0, w 96::, h 32::");
 
         JPanel myBoardContainer = new JPanel(new MigLayout("fill, insets 0", "[center]", "[center]16[center]16[center]16[center]"));
         myPanel.add(myBoardContainer);
 
-        JLabel myBoardLabel = new JLabel("Sắp xếp giảm dần");
+        JLabel myBoardLabel = new JLabel("Sắp xếp tăng dần");
         myBoardLabel.putClientProperty(FlatClientProperties.STYLE, "" +
                 "font:bold +4;");
         myBoardContainer.add(myBoardLabel, "wrap");
