@@ -3,6 +3,7 @@ package view.base;
 import main.Application;
 import model.ObjectWrapper;
 import model.Player;
+import model.Room;
 import view.GameView;
 import view.components.AppDialog;
 import view.components.AppDialogAction;
@@ -42,6 +43,14 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
                 onInviteCanceled();
             }
             case ObjectWrapper.ACCEPT_INVITATION -> {
+                final Room room = (Room) data.getData();
+
+                final int id = Application.getInstance().getCurrentPlayerId();
+
+                if (room.getFirstPlayer() != id && room.getSecondPlayer() != id) {
+                    return;
+                }
+
                 AppDialog.getInstance().dispose();
                 Application.getInstance().nextTo(new GameView());
             }
