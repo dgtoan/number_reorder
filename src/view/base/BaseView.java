@@ -17,6 +17,10 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
     public void onDataReceived(ObjectWrapper data) {
         switch (data.getPerformative()) {
             case ObjectWrapper.INVITE -> {
+                if (this instanceof GameView) {
+                    Application.getInstance().back();
+                }
+
                 int to = (int) ((Map<String, Object>) data.getData()).get("to");
                 if (to != Application.getInstance().getCurrentPlayerId()) return;
 
