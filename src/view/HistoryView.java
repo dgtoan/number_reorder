@@ -185,9 +185,10 @@ public class HistoryView extends BaseView {
             ArrayList<Room> historyRooms = new ArrayList<>();
 
             System.out.println("Room list: " + rooms.size());
+            final int id = Application.getInstance().getCurrentPlayerId();
 
             for (Room room : rooms) {
-                if (room.getTimeLeft() == 0) {
+                if (room.getTimeLeft() == 0 && (room.getFirstPlayer() == id || room.getSecondPlayer() == id)) {
                     historyRooms.add(room);
                 }
             }
@@ -213,7 +214,7 @@ public class HistoryView extends BaseView {
                 tableData[i][1] = playerName;
                 tableData[i][2] = room.getCreateAt().toString();
                 tableData[i][3] = room.getWinner() == -1 ? "Hòa" : room.getWinner() == Application.getInstance().getCurrentPlayerId() ? "Thắng" : "Thua";
-                tableData[i][4] = room.getWinner() == -1 ? "0" : room.getWinner() == Application.getInstance().getCurrentPlayerId() ? "+10" : "-10";
+                tableData[i][4] = room.getWinner() == -1 ? "0" : room.getWinner() == Application.getInstance().getCurrentPlayerId() ? "+" + room.getEloChange() : "-" + room.getEloChange();
             }
 
             setTableModel(tableData);
