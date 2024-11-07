@@ -85,8 +85,8 @@ public class Application extends JFrame {
             System.out.println("Navigation Log: Cannot go back");
             return;
         }
-
-        clientControl.setBaseView(backStack.pop());
+        backStack.pop();
+        clientControl.setBaseView(backStack.peek());
 
         System.out.println("Navigation Log: Back");
 
