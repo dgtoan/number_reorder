@@ -478,6 +478,7 @@ public class GameView extends BaseView {
 
             case ObjectWrapper.PLAYER_LIST -> {
                 ArrayList<Player> players = (ArrayList<Player>) data.getData();
+                players.sort((lhs, rhs) -> Integer.compare(rhs.getElo(), lhs.getElo()));
 
                 for (int i = 0; i < players.size(); i++) {
                     Player player = players.get(i);

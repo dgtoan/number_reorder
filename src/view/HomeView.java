@@ -243,6 +243,7 @@ public class HomeView extends BaseView {
         switch (data.getPerformative()) {
             case ObjectWrapper.PLAYER_LIST -> {
                 ArrayList<Player> players = (ArrayList<Player>) data.getData();
+                players.sort((lhs, rhs) -> Integer.compare(rhs.getElo(), lhs.getElo()));
                 Object[][] tableData = new Object[players.size()][6];
 
                 for (int i = 0; i < players.size(); i++) {
