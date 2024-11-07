@@ -3,6 +3,7 @@ package view;
 import com.formdev.flatlaf.FlatClientProperties;
 import main.Application;
 import model.ObjectWrapper;
+import model.Player;
 import model.Room;
 import net.miginfocom.swing.MigLayout;
 import view.base.BaseView;
@@ -36,6 +37,8 @@ public class GameView extends BaseView {
     ArrayList<String> myResult = new ArrayList<String>();
     ArrayList<String> myInitial = new ArrayList<String>();
     int roomId;
+    boolean receivedPlayerData = false;
+    int opponentId;
 
     public GameView() {
         setName("Game View");
@@ -439,6 +442,40 @@ public class GameView extends BaseView {
 
                     if (room.getTimeLeft() == 0) {
                         onGameOver(room);
+                    }
+
+                    if (!receivedPlayerData) {
+                        receivedPlayerData = true;
+                        if (isFirstPlayer) {
+                            opponentId = room.getSecondPlayer();
+                        } else {
+                            opponentId = room.getFirstPlayer();
+                        }
+                        Application.getInstance().sendData(new ObjectWrapper(ObjectWrapper.PLAYER_LIST, null));
+                    }
+                }
+            }
+
+            case ObjectWrapper.PLAYER_LIST -> {
+                ArrayList<Player> players = (ArrayList<Player>) data.getData();
+
+                for (int i = 0; i < players.size(); i++) {
+                    Player player = players.get(i);
+
+                    if (player.getId() == Application.getInstance().getCurrentPlayerId()) {
+                        myInfoPanel.setUserInfo(
+                                player.getPlayerName(),
+                                "#" + (i+1),
+                                String.valueOf(player.getElo())
+                        );
+                    }
+
+                    if (player.getId() == opponentId) {
+                        opponentInfoPanel.setUserInfo(
+                                player.getPlayerName(),
+                                "#" + (i+1),
+                                String.valueOf(player.getElo())
+                        );
                     }
                 }
             }
