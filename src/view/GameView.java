@@ -393,9 +393,19 @@ public class GameView extends BaseView {
                     ArrayList<String> firstProblem = new ArrayList<>(Arrays.asList(room.getFirstProblem().substring(1, room.getFirstProblem().length() - 1).split(", ")));
                     ArrayList<String> secondProblem = new ArrayList<>(Arrays.asList(room.getSecondProblem().substring(1, room.getSecondProblem().length() - 1).split(", ")));
 
-                    ArrayList<String> firstArray = new ArrayList<>(Arrays.asList(room.getFirstArray().substring(1, room.getFirstArray().length() - 1).split(", ")));
-                    ArrayList<String> secondArray = new ArrayList<>(Arrays.asList(room.getSecondArray().substring(1, room.getSecondArray().length() - 1).split(", ")));
+                    final String firstArrayString = room.getFirstArray().substring(1, room.getFirstArray().length() - 1);
+                    final String secondArrayString = room.getSecondArray().substring(1, room.getSecondArray().length() - 1);
 
+                    ArrayList<String> firstArray = new ArrayList<>();
+                    ArrayList<String> secondArray = new ArrayList<>();
+
+                    if (!firstArrayString.equals("")) {
+                        firstArray = new ArrayList<>(Arrays.asList(room.getFirstArray().substring(1, room.getFirstArray().length() - 1).split(", ")));
+                    }
+
+                    if (!secondArrayString.equals("")) {
+                        secondArray = new ArrayList<>(Arrays.asList(room.getSecondArray().substring(1, room.getSecondArray().length() - 1).split(", ")));
+                    }
 
                     if (isFirstPlayer) {
                         setOpponentGameState(secondProblem, secondArray);
