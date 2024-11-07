@@ -84,18 +84,30 @@ public class GameView extends BaseView {
         AppDialog.getInstance().showMessageDialog("Thành công", "Đã gửi kết quả, vui lòng chờ đối thủ hoàn thành");
     }
 
-    private void onGameOver(boolean isWin) {
+    private void onGameOver(Room room) {
         Application.getInstance().closeAllDialogs();
 
-        String message = isWin ? "Bạn đã thắng, bạn có muốn đấu lại?" : "Bạn đã thua, bạn có muốn đấu lại?";
+        final boolean isDraw = room.getWinner() == -1;
+        final boolean isWin = room.getWinner() == Application.getInstance().getCurrentPlayerId();
+
+        String message;
+
+        if (isDraw) {
+            message = "Hòa, bạn có muốn đấu lại không?";
+        } else {
+            message = isWin ? "Bạn đã thắng, bạn có muốn đấu lại không?" : "Bạn đã thua, bạn có muốn đấu lại không?";
+        }
+
         AppDialog.getInstance().showOptionDialog(
-                isWin ? "Bạn thắng" : "Bạn thua",
+                isDraw ? "Hòa" : isWin ? "Thắng (+" + room.getEloChange() + ")" : "Thua (-" + room.getEloChange() + ")",
                 message,
                 "Đấu lại",
                 "Thoát",
                 new AppDialogAction() {
                     @Override
                     public void onYes() {
+                        Application.getInstance().back();
+
                         // TODO: send invite play again
                     }
 
@@ -409,21 +421,23 @@ public class GameView extends BaseView {
 
                     if (isFirstPlayer) {
                         setOpponentGameState(secondProblem, secondArray);
-                        setMyGameState(firstProblem, firstArray);
-                        myInitial = firstProblem;
-                        myResult = firstArray;
+                        if (myInitial.size() == 0) {
+                            myInitial = firstArray;
+                            setMyGameState(myInitial, myResult);
+                        }
                     } else {
                         setOpponentGameState(firstProblem, firstArray);
-                        setMyGameState(secondProblem, secondArray);
-                        myInitial = secondProblem;
-                        myResult = secondArray;
+                        if (myInitial.size() == 0) {
+                            myInitial = secondArray;
+                            setMyGameState(myInitial, myResult);
+                        }
                     }
 
                     System.out.println("My initial: " + myInitial);
                     System.out.println("My result: " + myResult);
 
                     if (room.getTimeLeft() == 0) {
-                        onGameOver(room.getWinner() == Application.getInstance().getCurrentPlayerId());
+                        onGameOver(room);
                     }
                 }
             }
