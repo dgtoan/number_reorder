@@ -92,4 +92,12 @@ public abstract class BaseView extends JPanel implements ComponentResizeListener
     public void onInviteCanceled() {
         AppDialog.getInstance().dispose();
     }
+
+    public void initState() {};
+
+    public void onPause() {};
+
+    public void onResume() {};
+
+    public void dispose() {};
 }

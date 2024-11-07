@@ -272,4 +272,11 @@ public class HomeView extends BaseView {
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        fetchData();
+    }
 }

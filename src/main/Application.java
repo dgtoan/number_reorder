@@ -72,12 +72,14 @@ public class Application extends JFrame {
 
     public void nextTo(BaseView panel) {
         System.out.println("Navigation Log: Next to " + panel.getName());
+        backStack.peek().onPause();
         clientControl.setBaseView(panel);
         backStack.push(panel);
         panel.setBounds(getBounds());
         navigator.add(panel, panel.getName());
         CardLayout cardLayout = (CardLayout) navigator.getLayout();
         cardLayout.next(navigator);
+        panel.initState();
     }
 
     public void back() {
@@ -85,7 +87,8 @@ public class Application extends JFrame {
             System.out.println("Navigation Log: Cannot go back");
             return;
         }
-        backStack.pop();
+        backStack.pop().dispose();
+        backStack.peek().onResume();
         clientControl.setBaseView(backStack.peek());
 
         System.out.println("Navigation Log: Back");
